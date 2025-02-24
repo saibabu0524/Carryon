@@ -2,17 +2,13 @@ package com.saibabui.auth.presentation.ui.dashboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -21,14 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.saibabui.auth.R
-import com.saibabui.auth.presentation.navigation.AuthScreen
 
 @Composable
 fun DashBoardHeading(modifier: Modifier = Modifier , heading : String) {
@@ -104,45 +95,6 @@ fun DividerOr(divideString: String) {
     }
 }
 
-@Composable
-fun LoginWithMobileNumber(navController: NavController, buttonText : String) {
-    Button(
-        onClick = { navController.navigate(AuthScreen.Login.route) },
-        shape = RoundedCornerShape(5.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = buttonText,
-            fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,
-            lineHeight = 16.sp,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-
-@Composable
-fun LoginLinkForExistingAccount(navController: NavController) {
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(
-            text = stringResource(R.string.existing_account), fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
-            lineHeight = 14.sp,
-        )
-        Text(
-            text = stringResource(R.string.login), fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
-            lineHeight = 14.sp,
-            modifier = Modifier.clickable {
-                navController.navigate(AuthScreen.Login.route)
-            }
-        )
-    }
-}
 
 @Composable
 fun ProgressBar() {
