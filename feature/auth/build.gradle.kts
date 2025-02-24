@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("plugin.serialization") version "2.1.10"
     alias(libs.plugins.compose.compiler)
+    id("kotlin-parcelize")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -64,6 +67,7 @@ dependencies {
     implementation(libs.ui)
 
     implementation(libs.ui.tooling.preview)
+    implementation(project(":core:network"))
     debugImplementation(libs.ui.tooling)
 
     androidTestImplementation(libs.ui.test.junit4)
@@ -73,4 +77,11 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.adaptive)
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+}
+
+kapt {
+    correctErrorTypes = true
 }

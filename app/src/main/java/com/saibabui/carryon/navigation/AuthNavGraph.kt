@@ -1,32 +1,30 @@
-package com.saibabui.auth.presentation.navigation
+package com.saibabui.carryon.navigation
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.saibabui.auth.presentation.ui.dashboard.DashBoardScreen
+import com.saibabui.auth.presentation.ui.dashboard.DashboardNavigation
 import com.saibabui.auth.presentation.ui.login.LoginRoute
+import com.saibabui.auth.presentation.ui.login.LoginScreen
 import com.saibabui.auth.presentation.ui.verify.VerifyMobileNumberScreen
+import com.saibabui.auth.presentation.ui.verify.VerifyScreenNavigation
 
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
-    navigation(
-        route = Graph.AUTHENTICATION,
-        startDestination = AuthScreen.Dashboard.route
+    navigation<Authentication>(
+        startDestination = DashboardNavigation
     ) {
-        composable(AuthScreen.Login.route) {
-            LoginRoute(
+        composable<LoginRoute> {
+            LoginScreen(
                 navController
             )
         }
-        composable(AuthScreen.SignUp.route) {
-        }
-        composable(AuthScreen.Dashboard.route) {
+        composable<DashboardNavigation> {
             DashBoardScreen(navController = navController)
         }
-        composable(AuthScreen.VerifyMobileNumber.route) {
+        composable<VerifyScreenNavigation> {
             VerifyMobileNumberScreen(navController)
         }
     }

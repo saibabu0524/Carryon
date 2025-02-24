@@ -21,26 +21,21 @@ import com.saibabui.main.presentation.ui.home.HomeScreen
 import com.saibabui.main.presentation.ui.profile.ProfileScreen
 import com.saibabui.main.presentation.ui.transactions.TransactionScreen
 
-
 @Composable
 fun HomeScreenWithBottomNavigation(navController: NavHostController) {
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                modifier = Modifier
-            ) {
+            NavigationBar {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
                 MainNavDestination.entries.forEach { screen ->
                     NavigationBarItem(
                         icon = { Icon(screen.icon, contentDescription = null) },
                         label = { Text(text = stringResource(id = screen.resId)) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route.route } == true,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.destination.route } == true,
                         onClick = {
-                            navController.navigate(screen.route.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                            navController.navigate(screen.destination.route) {
+                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
@@ -51,113 +46,22 @@ fun HomeScreenWithBottomNavigation(navController: NavHostController) {
         }
     ) { paddingValues ->
         NavHost(
-            navController,
-            startDestination = Home.HomeScreen.route,
-            Modifier.padding(paddingValues)
+            navController = navController,
+            startDestination = Home.HomeScreenDestination.route,
+            modifier = Modifier.padding(paddingValues)
         ) {
-            composable(Home.HomeScreen.route) {
+            composable(route = Home.HomeScreenDestination.route) {
                 HomeScreen(navController, paddingValues)
             }
-            composable(Home.ProfileScreen.route) {
+            composable(route = Home.ProfileScreenDestination.route) {
                 ProfileScreen(navController, paddingValues)
             }
-            composable(Home.Activity.route) {
+            composable(route = Home.ActivityDestination.route) {
                 ActivityScreen(navController, paddingValues)
             }
-            composable(Home.Transactions.route) {
+            composable(route = Home.TransactionsDestination.route) {
                 TransactionScreen(navController, paddingValues)
             }
         }
     }
 }
-
-//
-//@Composable
-//fun BottomBar(navController: NavHostController) {
-//    val items = listOf(
-//        BottomNavigationModel(
-//            Home.HomeScreen.route,
-//            "Home",
-//            painterResource(id = R.drawable.profile_nav_icon)
-//        ),
-//        BottomNavigationModel(
-//            Home.Activity.route,
-//            "Activity",
-//            painterResource(id = R.drawable.profile_nav_icon)
-//        ),
-//        BottomNavigationModel(
-//            Home.Transactions.route,
-//            "Transactions",
-//            painterResource(id = R.drawable.profile_nav_icon)
-//        ),
-//        BottomNavigationModel(
-//            Home.ProfileScreen.route,
-//            "Profile",
-//            painterResource(id = R.drawable.profile_nav_icon)
-//        )
-//    )
-//    val navBackStackEntry by navController.currentBackStackEntryAsState()
-//    val currentDestination = navBackStackEntry?.destination
-//
-//
-//    val bottomBarDestination = items.any { it.route == currentDestination?.route }
-//    if (bottomBarDestination) {
-//        BottomNavigation(
-//            backgroundColor = MaterialTheme.colorScheme.background,
-//            contentColor = MaterialTheme.colorScheme.secondary,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .background(MaterialTheme.colorScheme.background)
-//        ) {
-//            items.forEach { screen ->
-//                AddItem(
-//                    screen = screen,
-//                    currentDestination = currentDestination,
-//                    navController = navController
-//                )
-//            }
-//        }
-//    }
-//}
-//
-//
-//@Composable
-//fun RowScope.AddItem(
-//    screen: BottomNavigationModel,
-//    currentDestination: NavDestination?,
-//    navController: NavHostController
-//) {
-//    BottomNavigationItem(
-//        label = {
-//            Text(
-//                text = screen.label,
-//                style = MaterialTheme.typography.bodySmall,
-//                color = MaterialTheme.colorScheme.onBackground,
-//            )
-//        },
-//        icon = {
-//            androidx.compose.material.Icon(
-//                painter = screen.icon,
-//                contentDescription = "Navigation Icon",
-//                tint = if (currentDestination?.hierarchy?.any {
-//                        it.route == screen.route
-//                    } == true) {
-//                    MaterialTheme.colorScheme.primary
-//                } else {
-//                    LocalContentColor.current.copy(alpha = ContentAlpha.disabled)
-//                }
-//            )
-//        },
-//        selected = currentDestination?.hierarchy?.any {
-//            it.route == screen.route
-//        } == true,
-//        unselectedContentColor = LocalContentColor.current.copy(alpha = ContentAlpha.disabled),
-//        onClick = {
-//            navController.navigate(screen.route) {
-//                popUpTo(navController.graph.findStartDestination().id)
-//                launchSingleTop = true
-//            }
-//        },
-//        modifier = Modifier.padding(vertical = 10.dp)
-//    )
-//}
