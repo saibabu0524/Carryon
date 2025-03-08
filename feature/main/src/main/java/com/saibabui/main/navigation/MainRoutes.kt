@@ -1,8 +1,19 @@
 package com.saibabui.main.navigation
 
+import kotlinx.serialization.Serializable
+
+
+@Serializable
 sealed class Home(val route: String) {
-    data object HomeScreen : Home("homeScreen")
-    data object ProfileScreen : Home("profileScreen")
-    data object Activity : Home("activity")
-    data object Transactions : Home("transactions")
+    @Serializable
+    object HomeScreenDestination : Home("home_screen")
+
+    @Serializable
+    object ActivityDestination : Home("activity")
+
+    @Serializable
+    object TransactionsDestination : Home("transactions")
+
+    @Serializable
+    object ProfileScreenDestination : Home("profile_screen")
 }
