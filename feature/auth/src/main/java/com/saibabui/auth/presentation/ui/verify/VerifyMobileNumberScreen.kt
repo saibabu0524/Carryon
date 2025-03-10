@@ -23,6 +23,7 @@ import com.saibabui.auth.presentation.ui.login.PrimaryButton
 import com.saibabui.auth.presentation.ui.login.CustomTextFieldState
 import com.saibabui.auth.presentation.ui.login.CustomeTextField
 import com.saibabui.auth.presentation.ui.login.HeadingText
+import com.saibabui.auth.presentation.ui.login.LoginRoute
 import com.saibabui.auth.presentation.ui.login.LoginViewmodel
 import com.saibabui.auth.presentation.ui.login.SecondaryButton
 import com.saibabui.auth.utils.TopAppBarComposable
@@ -31,18 +32,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 fun VerifyMobileNumberScreen(
     navController: NavController,
+    navigateToHome : () -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBarComposable(arrowBackIcon = R.drawable.back_icon) {
-                navController.popBackStack()
+                navController.navigateUp()
             }
         }
     ) { paddingValues ->
         VerifyMobileNumberScreen(
             paddingValues = paddingValues,
             onVerifyButtonClick = {
-                //navController.navigateToHome()
+                navigateToHome()
+                //navController.popBackStack(LoginRoute, inclusive = true)
             },
             onResendOtpClick = {},
             onBackClick = {}

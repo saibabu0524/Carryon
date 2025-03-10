@@ -95,7 +95,8 @@ fun LoginScreenBody(
                     keyboardType = KeyboardType.Number
                 )
                 PrimaryButton(buttonText = stringResource(id = R.string.continue_)) {
-                    loginViewmodel.validate(SignUpFormEvents.SignUpButtonEvent)
+//                    loginViewmodel.validate(SignUpFormEvents.SignUpButtonEvent)
+                    navController.navigateToVerifyScreen()
                 }
             }
         }

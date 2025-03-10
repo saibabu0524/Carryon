@@ -12,7 +12,7 @@ import com.saibabui.auth.presentation.ui.verify.VerifyMobileNumberScreen
 import com.saibabui.auth.presentation.ui.verify.VerifyScreenNavigation
 
 
-fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
+fun NavGraphBuilder.authNavGraph(navController: NavHostController, navigateToHome: () -> Unit) {
     navigation<Authentication>(
         startDestination = DashboardNavigation
     ) {
@@ -25,7 +25,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             DashBoardScreen(navController = navController)
         }
         composable<VerifyScreenNavigation> {
-            VerifyMobileNumberScreen(navController)
+            VerifyMobileNumberScreen(navController, navigateToHome)
         }
     }
 }

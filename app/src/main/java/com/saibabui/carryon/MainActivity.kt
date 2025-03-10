@@ -9,7 +9,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.saibabui.carryon.navigation.RootNavigationGraph
+import com.saibabui.carryon.navigation.navigateToHome
 import com.saibabui.carryon.ui.theme.CarryonTheme
+import com.saibabui.main.navigation.Home
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +25,9 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    RootNavigationGraph(navController)
+                    RootNavigationGraph(navController){
+                        navController.navigateToHome()
+                    }
                 }
             }
         }
