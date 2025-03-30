@@ -1,10 +1,10 @@
 package com.saibabui.main.navigation
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,8 +16,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.saibabui.main.presentation.ui.activity.ActivityScreen
+import com.saibabui.main.presentation.ui.activity.TemplateScreen
 import com.saibabui.main.presentation.ui.home.HomeScreen
+import com.saibabui.main.presentation.ui.profile.AccountScreen
 import com.saibabui.main.presentation.ui.profile.ProfileScreen
 import com.saibabui.main.presentation.ui.transactions.TransactionScreen
 
@@ -51,13 +52,13 @@ fun HomeScreenWithBottomNavigation(navController: NavHostController) {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(route = Home.HomeScreenDestination.route) {
-                HomeScreen(navController, paddingValues)
+                HomeScreen(navController)
             }
             composable(route = Home.ProfileScreenDestination.route) {
                 ProfileScreen(navController, paddingValues)
             }
             composable(route = Home.ActivityDestination.route) {
-                ActivityScreen(navController, paddingValues)
+                TemplateScreen(navController, paddingValues)
             }
             composable(route = Home.TransactionsDestination.route) {
                 TransactionScreen(navController, paddingValues)
