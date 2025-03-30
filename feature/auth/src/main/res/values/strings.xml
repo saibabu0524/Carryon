@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CarryOn</string>
+    <string name="app_name">Resume Maker</string>
     <string name="brand_icon_cd">Brand Icon</string>
     <string name="facebook_icon">Facebook icon</string>
     <string name="google_icon">Google icon</string>
@@ -38,4 +38,15 @@
     <string name="active_now">Active now</string>
     <string name="profile_photo">Profile photo</string>
     <string name="home">Home</string>
+    <string name="login_title">Welcome to Resume Maker</string>
+    <string name="login_subtitle">Log in to access your resumes</string>
+    <string name="email_or_mobile_label">Email or Mobile Number</string>
+    <string name="password_label">Password</string>
+    <string name="email_or_mobile_hint">Enter your email or mobile number</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="email_or_mobile_helper">Use the email or mobile number associated with your account</string>
+    <string name="password_helper">Password must be at least 8 characters</string>
+    <string name="login_button">Login</string>
+    <string name="forgot_password_link">Forgot Password?</string>
+    <string name="sign_up_link">Don\'t have an account? Sign Up</string>
 </resources>
