@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.ui)
 
     implementation(libs.ui.tooling.preview)
+    implementation(project(":core:ui"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,4 +77,6 @@ dependencies {
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.adaptive)
+
+    implementation(libs.coil.compose)
 }
