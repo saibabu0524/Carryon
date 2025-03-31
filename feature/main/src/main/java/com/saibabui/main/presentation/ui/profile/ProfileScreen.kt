@@ -17,8 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,32 +38,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import com.saibabui.ui.PrimaryButton
 
 @Composable
 fun ProfileScreen(
-    navController: NavController,
-    paddingValues: PaddingValues
+    navController: NavController
 ) {
     AccountScreen(navController)
 }
-
-
-@Composable
-fun ProfileScreen(
-    paddingValues: PaddingValues
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues = paddingValues),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Profile Screen")
-    }
-}
-
 
 
 @Composable
@@ -73,91 +54,38 @@ fun ProfileSection(viewModel: AccountViewModel) {
     val userProfile by viewModel.userProfile.collectAsState()
     var isEditing by remember { mutableStateOf(false) }
 
-    if (isEditing) {
-        EditProfileForm(userProfile = userProfile, onSave = { updatedProfile ->
-            viewModel.updateProfile(updatedProfile)
-            isEditing = false
-        })
-    } else {
-        ProfileCard(userProfile = userProfile, onEditClick = { isEditing = true })
-    }
-}
-
-@Composable
-fun ProfileCard(userProfile: UserProfile, onEditClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            // Profile Picture
-            Image(
-                painter = rememberImagePainter(userProfile.profilePictureUrl),
-                contentDescription = "Profile Picture",
-                modifier = Modifier
-                    .size(120.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Basic Details
-            Text(text = "Profile Details", style = MaterialTheme.typography.headlineSmall)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Name: ${userProfile.name}")
-            Text(text = "Email: ${userProfile.email}")
-            Text(text = "Phone: ${userProfile.phone}")
-            Text(text = "Address: ${userProfile.address}")
-            Text(text = "LinkedIn: ${userProfile.linkedin}")
-            Text(text = "Website: ${userProfile.website}")
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Summary
-            Text(text = "Summary", style = MaterialTheme.typography.labelSmall)
-            Text(text = userProfile.summary)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Experience
-            Text(text = "Experience", style = MaterialTheme.typography.labelSmall)
-            userProfile.experience.forEach { exp ->
-                Text(text = "- ${exp.title} at ${exp.company} (${exp.duration})")
-                Text(text = "  ${exp.description}")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Projects
-            Text(text = "Projects", style = MaterialTheme.typography.labelSmall)
-            userProfile.projects.forEach { proj ->
-                Text(text = "- ${proj.name}")
-                Text(text = "  ${proj.description}")
-                Text(text = "  Technologies: ${proj.technologies}")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Internships
-            Text(text = "Internships", style = MaterialTheme.typography.labelSmall)
-            userProfile.internships.forEach { intern ->
-                Text(text = "- ${intern.title} at ${intern.company} (${intern.duration})")
-                Text(text = "  ${intern.description}")
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Edit Button
-            Button(
-                onClick = onEditClick,
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Text("Edit Profile")
-            }
+    UserDetailedCard(
+        cardTitle = "Name and Details",
+        cardDescription = "Name: ${userProfile.name} \n" +
+                "Email: ${userProfile.email} \n" +
+                "Phone ${userProfile.phone} \n" +
+                "LinkedIn: ${userProfile.linkedin} \n" +
+                "Website: ${userProfile.website}"
+    )
+    UserDetailedCard(
+        cardTitle = "Summary",
+        cardDescription = userProfile.summary
+    )
+    UserDetailedCard(
+        cardTitle = "Experience",
+        cardDescription = userProfile.experience.joinToString(separator = "\n") {
+            "${it.title} at ${it.company} (${it.duration}) - ${it.description}"
         }
-    }
+    )
+    UserDetailedCard(
+        cardTitle = "Projects",
+        cardDescription = userProfile.projects.joinToString(separator = "\n") {
+            "${it.name} - ${it.description} - ${it.technologies}"
+        }
+    )
+    UserDetailedCard(
+        cardTitle = "Internships",
+        cardDescription = userProfile.internships.joinToString(separator = "\n") {
+            "${it.title} at ${it.company} (${it.duration}) - ${it.description}"
+        }
+    )
 }
+
 
 @Composable
 fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
@@ -197,7 +125,12 @@ fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
         // Basic Details
         Text(text = "Edit Profile", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(16.dp))
-        TextField(value = name, onValueChange = { name = it }, label = { Text("Full Name") }, modifier = Modifier.fillMaxWidth())
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Full Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = email,
@@ -215,11 +148,26 @@ fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth())
+        TextField(
+            value = address,
+            onValueChange = { address = it },
+            label = { Text("Address") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = linkedin, onValueChange = { linkedin = it }, label = { Text("LinkedIn Profile") }, modifier = Modifier.fillMaxWidth())
+        TextField(
+            value = linkedin,
+            onValueChange = { linkedin = it },
+            label = { Text("LinkedIn Profile") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = website, onValueChange = { website = it }, label = { Text("Personal Website") }, modifier = Modifier.fillMaxWidth())
+        TextField(
+            value = website,
+            onValueChange = { website = it },
+            label = { Text("Personal Website") },
+            modifier = Modifier.fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = summary,
@@ -233,7 +181,10 @@ fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Experience
-        Text(text = "Experience (each line: title|company|duration|description)", style = MaterialTheme.typography.labelSmall)
+        Text(
+            text = "Experience (each line: title|company|duration|description)",
+            style = MaterialTheme.typography.labelSmall
+        )
         TextField(
             value = experienceText,
             onValueChange = { experienceText = it },
@@ -244,7 +195,10 @@ fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Projects
-        Text(text = "Projects (each line: name|description|technologies)", style = MaterialTheme.typography.labelSmall)
+        Text(
+            text = "Projects (each line: name|description|technologies)",
+            style = MaterialTheme.typography.labelSmall
+        )
         TextField(
             value = projectsText,
             onValueChange = { projectsText = it },
@@ -255,7 +209,10 @@ fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Internships
-        Text(text = "Internships (each line: title|company|duration|description)", style = MaterialTheme.typography.labelSmall)
+        Text(
+            text = "Internships (each line: title|company|duration|description)",
+            style = MaterialTheme.typography.labelSmall
+        )
         TextField(
             value = internshipsText,
             onValueChange = { internshipsText = it },
@@ -267,18 +224,20 @@ fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
 
         // Save Button
         Button(onClick = {
-            val updatedExperience = experienceText.split("\n").filter { it.isNotBlank() }.map { line ->
-                val parts = line.split("|")
-                Experience(parts[0], parts[1], parts[2], parts[3])
-            }
+            val updatedExperience =
+                experienceText.split("\n").filter { it.isNotBlank() }.map { line ->
+                    val parts = line.split("|")
+                    Experience(parts[0], parts[1], parts[2], parts[3])
+                }
             val updatedProjects = projectsText.split("\n").filter { it.isNotBlank() }.map { line ->
                 val parts = line.split("|")
                 Project(parts[0], parts[1], parts[2])
             }
-            val updatedInternships = internshipsText.split("\n").filter { it.isNotBlank() }.map { line ->
-                val parts = line.split("|")
-                Internship(parts[0], parts[1], parts[2], parts[3])
-            }
+            val updatedInternships =
+                internshipsText.split("\n").filter { it.isNotBlank() }.map { line ->
+                    val parts = line.split("|")
+                    Internship(parts[0], parts[1], parts[2], parts[3])
+                }
             val updatedProfile = userProfile.copy(
                 name = name,
                 email = email,
@@ -298,7 +257,6 @@ fun EditProfileForm(userProfile: UserProfile, onSave: (UserProfile) -> Unit) {
     }
 }
 
-// Composable for Settings Toggles Section
 @Composable
 fun SettingsSection(viewModel: AccountViewModel) {
     val isNotificationEnabled by viewModel.isNotificationEnabled.collectAsState()
@@ -319,7 +277,6 @@ fun SettingsSection(viewModel: AccountViewModel) {
                 onCheckedChange = { viewModel.toggleNotification(it) }
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -333,10 +290,9 @@ fun SettingsSection(viewModel: AccountViewModel) {
     }
 }
 
-// Composable for Logout Button
 @Composable
 fun LogoutButton(viewModel: AccountViewModel, navController: NavController) {
-    Button(
+    PrimaryButton(
         onClick = {
             viewModel.logout()
             navController.navigate("login") {
@@ -345,36 +301,20 @@ fun LogoutButton(viewModel: AccountViewModel, navController: NavController) {
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text("Logout")
-    }
+            .padding(horizontal = 16.dp),
+        buttonText = "Logout"
+    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(navController: NavController, viewModel: AccountViewModel = viewModel()) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Account") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()) // Enable scrolling here
-        ) {
-            ProfileSection(viewModel)
-            SettingsSection(viewModel)
-            LogoutButton(viewModel, navController)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()) // Enable scrolling here
+    ) {
+        ProfileSection(viewModel)
+        SettingsSection(viewModel)
+        LogoutButton(viewModel, navController)
     }
 }
