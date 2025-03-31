@@ -1,4 +1,4 @@
-package com.saibabui.mylibrary2
+package com.saibabui.ui
 
 import org.junit.Test
 
