@@ -73,7 +73,7 @@ class AccountViewModel : ViewModel() {
 
     // Handle logout (placeholder for actual logic)
     fun logout() {
-        // Add logout logic here, e.g., clear user session
+
     }
 
     fun updateProfile(

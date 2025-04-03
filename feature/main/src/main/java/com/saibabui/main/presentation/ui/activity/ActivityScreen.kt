@@ -23,14 +23,12 @@ import com.saibabui.main.utils.FilterButtons
 
 @Composable
 fun TemplateScreen(
-    navController: NavController,
-    paddingValues: PaddingValues
+    navController: NavController
 ) {
     val viewModel: TemplatesViewModel = viewModel()
     TemplatesScreen(navController, viewModel)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TemplatesScreen(navController: NavController, viewModel: TemplatesViewModel = viewModel()) {
     val templates by viewModel.templates.collectAsState()
@@ -38,16 +36,8 @@ fun TemplatesScreen(navController: NavController, viewModel: TemplatesViewModel 
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     val categories = listOf("Professional", "Creative", "Traditional", "Minimalist")
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Choose a Template") }
-            )
-        }
-    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(paddingValues)
                 .fillMaxSize()
         ) {
             // Search Bar
@@ -98,10 +88,8 @@ fun TemplatesScreen(navController: NavController, viewModel: TemplatesViewModel 
                 }
             }
         }
-    }
 }
 
-// Placeholder TemplateCard (replace with your implementation)
 @Composable
 fun TemplateCard(template: Template, onClick: () -> Unit) {
     Card(
