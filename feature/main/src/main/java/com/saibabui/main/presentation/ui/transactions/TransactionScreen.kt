@@ -34,31 +34,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun TransactionScreen(
-    navController: NavController,
-    paddingValues: PaddingValues
+    navController: NavController
 ) {
-    ResumesScreen(navController = NavController(context = LocalContext.current))
-}
-
-
-@Composable
-fun TransactionScreen(
-    paddingValues: PaddingValues
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues = paddingValues),
-        contentAlignment = Alignment.Center
-    ) {
-        ResumesScreen(navController = NavController(context = LocalContext.current))
-    }
+    ResumesScreen(navController = navController)
 }
 
 
 
 
-// Composable for each resume item
 @Composable
 fun ResumeItem(
     resume: Resume,
@@ -100,7 +83,6 @@ fun ResumeItem(
     }
 }
 
-// Composable for delete confirmation dialog
 @Composable
 fun DeleteConfirmationDialog(
     onConfirm: () -> Unit,
@@ -123,8 +105,6 @@ fun DeleteConfirmationDialog(
     )
 }
 
-// Main ResumesScreen composable
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResumesScreen(
     navController: NavController,
@@ -133,17 +113,7 @@ fun ResumesScreen(
     val resumes by viewModel.resumes.collectAsState()
     var resumeToDelete by remember { mutableStateOf<String?>(null) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("My Resumes") })
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("templates") }) {
-                Icon(Icons.Default.Add, contentDescription = "Create New Resume")
-            }
-        }
-    ) { paddingValues ->
-        Box(modifier = Modifier.padding(paddingValues)) {
+        Box(modifier = Modifier) {
             if (resumes.isEmpty()) {
                 // Empty state
                 Column(
@@ -185,4 +155,3 @@ fun ResumesScreen(
             }
         }
     }
-}
