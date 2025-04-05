@@ -24,6 +24,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("boolean", "MOCK_API", "false")
+        }
+        getByName("debug") {
+            buildConfigField("boolean", "MOCK_API", "false")
+        }
+        create("mock") {
+            buildConfigField("boolean", "MOCK_API", "true")
         }
     }
     compileOptions {
@@ -32,6 +39,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
