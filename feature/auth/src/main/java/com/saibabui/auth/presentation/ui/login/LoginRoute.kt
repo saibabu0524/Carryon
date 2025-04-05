@@ -1,5 +1,6 @@
 package com.saibabui.auth.presentation.ui.login
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,7 @@ import com.saibabui.auth.R
 import com.saibabui.auth.presentation.ui.verify.navigateToVerifyScreen
 import com.saibabui.auth.utils.TopAppBarComposable
 import com.saibabui.auth.utils.UiState
+import com.saibabui.network.auth.model.LoginResponse
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -59,10 +62,17 @@ fun LoginScreenBody(
 ) {
     // Observe the login state from the ViewModel.
     val loginState by loginViewmodel.loginState.collectAsStateWithLifecycle()
+    val mobileNumber by loginViewmodel.mobileNumber.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     // Trigger navigation as a side effect when login is successful.
     LaunchedEffect(key1 = loginState) {
         if (loginState is UiState.Success) {
+            Toast.makeText(
+                context,
+                (loginState as UiState.Success<LoginResponse>).data.message,
+                Toast.LENGTH_SHORT
+            ).show()
             navController.navigateToVerifyScreen()
         }
     }
@@ -94,14 +104,16 @@ fun LoginScreenBody(
                     internalState = loginViewmodel.mobileNumber,
                     keyboardType = KeyboardType.Number
                 )
-                PrimaryButton(buttonText = stringResource(id = R.string.continue_)) {
-//                    loginViewmodel.validate(SignUpFormEvents.SignUpButtonEvent)
-                    navController.navigateToVerifyScreen()
+                PrimaryButton(
+                    buttonText = stringResource(id = R.string.continue_),
+                    isEnabled = mobileNumber.isValid
+                ) {
+                    loginViewmodel.validate(SignUpFormEvents.SignUpButtonEvent)
                 }
             }
         }
 
-                                            // Overlay:   z indicator and error message.
+        // Overlay:   z indicator and error message.
         when (loginState) {
             is UiState.Loading -> {
                 Box(
@@ -113,6 +125,7 @@ fun LoginScreenBody(
                     CircularProgressIndicator()
                 }
             }
+
             is UiState.Error -> {
                 Box(
                     modifier = Modifier
@@ -126,6 +139,7 @@ fun LoginScreenBody(
                     )
                 }
             }
+
             else -> {}
         }
     }

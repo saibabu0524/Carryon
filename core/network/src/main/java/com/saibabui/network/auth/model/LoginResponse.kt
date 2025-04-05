@@ -15,5 +15,5 @@ data class LoginResponse(
 
 @Parcelize
 data class LoginData(
-    val otpSentTo : String
+    val otp : String
 ) : Parcelable

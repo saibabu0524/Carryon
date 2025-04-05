@@ -1,6 +1,5 @@
 package com.saibabui.auth.presentation.ui.login
 
-import android.text.InputType
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -132,7 +130,7 @@ fun CustomeTextField(
 }
 
 @Composable
-fun PrimaryButton(buttonText: String, onClick: () -> Unit) {
+fun PrimaryButton(buttonText: String, isEnabled: Boolean = true, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(5.dp),

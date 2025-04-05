@@ -49,8 +49,8 @@ fun DashBoardScreen(
         verticalArrangement = Arrangement.spacedBy(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        DashBoardHeading(heading = stringResource(R.string.dashboard_message))
-        HeadingShortDescription(shortDescription = stringResource(R.string.dashboard_short_description))
+        DashBoardHeading(heading = stringResource(R.string.resume_builder_message))
+        HeadingShortDescription(shortDescription = stringResource(R.string.resume_builder_short_description))
         PrimaryButton(stringResource(R.string.sign_up_with_mobile_number)) {
             navController.navigateToLogin()
         }
