@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "message": "OTP sent successfully",
+  "data": {
+    "otpSentTo": "+1234567890"
+  }
+}
