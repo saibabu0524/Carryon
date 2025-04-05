@@ -16,9 +16,8 @@
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="create_an_account">Create an account</string>
-    <string name="dashboard_message">Fast and Reliable Package Delivery</string>
-    <string name="dashboard_short_description">
-    Our app makes package delivery quick, reliable, and hassle-free. Enjoy seamless service anytime, anywhere.</string>
+    <string name="resume_builder_message">Create Professional LaTeX Resumes</string>
+    <string name="resume_builder_short_description">Easily craft polished, customizable LaTeX resumes with our app. Build standout CVs effortlessly, anytime.</string>
     <string name="existing_account">Existing account?</string>
     <string name="login">Login</string>
     <string name="continue_">Continue</string>
@@ -27,8 +26,7 @@
     <string name="sign_up_with_mobile_number">Sign up with mobile number</string>
     <string name="or">OR</string>
     <string name="log_in_to_chatbox">Log in to your account</string>
-    <string name="welcome_back_sign_in_using_mobile_number_to_continue_us">
-    Welcome back! Sign in your account with mobile number to continue using our app.</string>
+    <string name="welcome_back_sign_in_using_mobile_number_to_continue_us">Welcome back! Sign in with your mobile number to continue building your LaTeX resumes.</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="back_navigation_icon">Back navigation icon</string>
     <string name="call">Call</string>
