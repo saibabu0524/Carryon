@@ -1,7 +1,6 @@
-package com.saibabui.network.auth.clint
+package com.saibabui.network.utils
 
 import android.content.Context
-import com.saibabui.network.utils.MockInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

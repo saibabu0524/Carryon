@@ -1,4 +1,4 @@
-package com.saibabui.network.auth.repositories
+package com.saibabui.network.utils
 
 import com.saibabui.network.auth.model.ApiResponse
 import kotlinx.coroutines.flow.Flow
