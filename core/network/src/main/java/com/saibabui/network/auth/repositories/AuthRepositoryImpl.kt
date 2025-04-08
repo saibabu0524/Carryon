@@ -1,6 +1,7 @@
 package com.saibabui.network.auth.repositories
 
 import com.saibabui.network.auth.api.AuthService
+import com.saibabui.network.utils.BaseRepository
 import com.saibabui.network.auth.model.ApiResponse
 import com.saibabui.network.auth.model.LoginRequest
 import com.saibabui.network.auth.model.LoginResponse

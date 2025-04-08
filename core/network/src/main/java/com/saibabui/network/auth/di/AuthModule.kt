@@ -3,7 +3,7 @@ package com.saibabui.network.auth.di
 
 import android.content.Context
 import com.saibabui.network.auth.api.AuthService
-import com.saibabui.network.auth.clint.RetrofitClient
+import com.saibabui.network.utils.RetrofitClient
 import com.saibabui.network.auth.repositories.AuthRepository
 import com.saibabui.network.auth.repositories.AuthRepositoryImpl
 import dagger.Module
