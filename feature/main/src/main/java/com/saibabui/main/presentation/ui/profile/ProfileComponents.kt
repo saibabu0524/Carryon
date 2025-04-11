@@ -38,7 +38,7 @@ fun UserDetailedCard(modifier: Modifier = Modifier, cardTitle: String, cardDescr
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = cardTitle, style = MaterialTheme.typography.headlineSmall)
+            Text(text = cardTitle, style = MaterialTheme.typography.titleMedium)
             Icon(
                 Icons.Default.Add,
                 contentDescription = "add icon",

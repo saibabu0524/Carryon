@@ -294,10 +294,7 @@ fun SettingsSection(viewModel: AccountViewModel) {
 fun LogoutButton(viewModel: AccountViewModel, navController: NavController) {
     PrimaryButton(
         onClick = {
-            viewModel.logout()
-            navController.navigate("login") {
-                popUpTo("account") { inclusive = true }
-            }
+
         },
         modifier = Modifier
             .fillMaxWidth()
