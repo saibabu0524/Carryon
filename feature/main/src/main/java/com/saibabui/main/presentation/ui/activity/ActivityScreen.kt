@@ -80,8 +80,7 @@ fun TemplatesScreen(navController: NavController, viewModel: TemplatesViewModel 
                         TemplateCard(
                             template = template,
                             onClick = {
-                                val newResumeId = "new_${template.id}"
-                                navController.navigate("personal_info/$newResumeId")
+
                             }
                         )
                     }
@@ -106,7 +105,7 @@ fun TemplateCard(template: Template, onClick: () -> Unit) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = template.name, style = MaterialTheme.typography.headlineSmall)
+            Text(text = template.name, style = MaterialTheme.typography.titleMedium)
             Text(text = template.category, style = MaterialTheme.typography.bodyMedium)
         }
     }
