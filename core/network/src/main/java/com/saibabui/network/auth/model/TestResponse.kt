@@ -1,9 +1,6 @@
 package com.saibabui.network.auth.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class TestResponse(
-    val status: String
-) : Parcelable
+    val status : String,
+    val message : String,
+)

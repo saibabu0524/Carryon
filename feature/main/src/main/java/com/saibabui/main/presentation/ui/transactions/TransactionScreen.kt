@@ -64,7 +64,7 @@ fun ResumeItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = resume.name, style = MaterialTheme.typography.headlineSmall)
+                Text(text = resume.name, style = MaterialTheme.typography.titleMedium)
                 Text(
                     text = "Last modified: ${resume.lastModified}",
                     style = MaterialTheme.typography.bodyMedium
@@ -121,9 +121,9 @@ fun ResumesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text("No resumes yet.", style = MaterialTheme.typography.headlineSmall)
+                    Text("No resumes yet.", style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { navController.navigate("templates") }) {
+                    Button(onClick = { }) {
                         Text("Create your first resume")
                     }
                 }
@@ -135,8 +135,8 @@ fun ResumesScreen(
                     items(resumes) { resume ->
                         ResumeItem(
                             resume = resume,
-                            onView = { navController.navigate("view_resume/${resume.id}") },
-                            onEdit = { navController.navigate("edit_resume/${resume.id}") },
+                            onView = { },
+                            onEdit = { },
                             onDelete = { resumeToDelete = resume.id }
                         )
                     }
