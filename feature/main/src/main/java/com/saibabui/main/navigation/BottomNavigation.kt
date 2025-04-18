@@ -20,7 +20,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.saibabui.main.presentation.ui.activity.TemplateScreen
 import com.saibabui.main.presentation.ui.home.HomeScreen
-import com.saibabui.main.presentation.ui.profile.AccountScreen
+import com.saibabui.main.presentation.ui.pdfviewer.PdfViewerScreen
+
 import com.saibabui.main.presentation.ui.profile.ProfileScreen
 import com.saibabui.main.presentation.ui.transactions.TransactionScreen
 
@@ -77,6 +78,11 @@ fun HomeScreenWithBottomNavigation(navController: NavHostController) {
             }
             composable(route = Home.TransactionsDestination.route) {
                 TransactionScreen(navController)
+            }
+            composable<ResumePreviewScreen> {
+                PdfViewerScreen(
+
+                )
             }
         }
     }

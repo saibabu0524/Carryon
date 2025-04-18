@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.saibabui.main.navigation.navigateToResumeScreen
 import com.saibabui.mylibrary2.R
 import com.saibabui.ui.PrimaryButton
 import com.saibabui.ui.SecondaryButton
@@ -89,7 +90,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
                             previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
                         ),
                         onClick = {
-                            // TODO("Navigation to template screen")
+                            navController.navigateToResumeScreen()
                         }
                     )
                 }

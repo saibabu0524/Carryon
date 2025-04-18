@@ -1,5 +1,7 @@
 package com.saibabui.main.navigation
 
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import kotlinx.serialization.Serializable
 
 
@@ -17,3 +19,11 @@ sealed class Home(val route: String) {
     @Serializable
     object ProfileScreenDestination : Home("profile_screen")
 }
+
+
+@Serializable
+object ResumePreviewScreen
+
+
+fun NavController.navigateToResumeScreen(navOptions: NavOptions? = null) =
+    navigate(route = ResumePreviewScreen, navOptions)
