@@ -13,40 +13,62 @@ import okhttp3.Request
 import java.io.File
 import java.io.IOException
 
-class ResumePreviewViewModel : ViewModel() {
-    private val _pdfState = MutableStateFlow<PdfState>(PdfState.Loading)
-    val pdfState: StateFlow<PdfState> = _pdfState.asStateFlow()
+//class ResumePreviewViewModel : ViewModel() {
+//    private val _pdfState = MutableStateFlow<PdfState>(PdfState.Loading)
+//    val pdfState: StateFlow<PdfState> = _pdfState.asStateFlow()
+//
+//    fun loadPdf(resumeId: String) {
+//        viewModelScope.launch {
+//            _pdfState.value = PdfState.Loading
+//            try {
+//                val url = getResumePdfUrl(resumeId)
+//                val file = downloadPdf(url)
+//                _pdfState.value = PdfState.Success(file)
+//            } catch (e: Exception) {
+//                _pdfState.value = PdfState.Error("Failed to load PDF: ${e.message}")
+//            }
+//        }
+//    }
+//
+//    private suspend fun downloadPdf(url: String): File = withContext(Dispatchers.IO) {
+//        val client = OkHttpClient()
+//        val request = Request.Builder().url(url).build()
+//        val response = client.newCall(request).execute()
+//        if (!response.isSuccessful) throw IOException("Failed to download file: $response")
+//
+//        val tempFile = File.createTempFile("resume", ".pdf")
+//        response.body?.byteStream()?.use { input ->
+//            tempFile.outputStream().use { output ->
+//                input.copyTo(output)
+//            }
+//        }
+//        tempFile
+//    }
+//}
+//
+//// Placeholder function to get the PDF URL (replace with your actual API)
+//fun getResumePdfUrl(resumeId: String): String {
+//    return "https://pdfobject.com/pdf/sample.pdf"
+//}
 
-    fun loadPdf(resumeId: String) {
-        viewModelScope.launch {
-            _pdfState.value = PdfState.Loading
-            try {
-                val url = getResumePdfUrl(resumeId)
-                val file = downloadPdf(url)
-                _pdfState.value = PdfState.Success(file)
-            } catch (e: Exception) {
-                _pdfState.value = PdfState.Error("Failed to load PDF: ${e.message}")
-            }
-        }
+
+class PdfViewerViewModel : ViewModel() {
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    fun setLoading(isLoading: Boolean) {
+        _isLoading.value = isLoading
     }
 
-    private suspend fun downloadPdf(url: String): File = withContext(Dispatchers.IO) {
-        val client = OkHttpClient()
-        val request = Request.Builder().url(url).build()
-        val response = client.newCall(request).execute()
-        if (!response.isSuccessful) throw IOException("Failed to download file: $response")
-
-        val tempFile = File.createTempFile("resume", ".pdf")
-        response.body?.byteStream()?.use { input ->
-            tempFile.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
-        tempFile
+    fun setError(message: String?) {
+        _errorMessage.value = message
     }
-}
 
-// Placeholder function to get the PDF URL (replace with your actual API)
-fun getResumePdfUrl(resumeId: String): String {
-    return "https://example.com/resumes/$resumeId.pdf"
+    fun useTemplate() {
+        // TODO: Implement the logic to use the template
+        println("Use this template clicked")
+    }
 }
