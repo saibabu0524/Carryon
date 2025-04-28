@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,11 +16,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PrimaryButton(buttonText: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun PrimaryButton(
+    buttonText: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    buttonColors: ButtonColors = ButtonDefaults.buttonColors()
+) {
     Button(
         onClick = onClick,
-        shape = RoundedCornerShape(5.dp),
-        modifier = modifier
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier,
+        colors = buttonColors
     ) {
         Text(
             text = buttonText,
@@ -60,5 +67,5 @@ fun SecondaryButton(buttonText: String, onClick: () -> Unit, modifier: Modifier 
 @Preview
 @Composable
 fun PrimaryButtonPreview() {
-    PrimaryButton(buttonText = "Primary Button", onClick = {})
+//    PrimaryButton(buttonText = "Primary Button", onClick = {})
 }

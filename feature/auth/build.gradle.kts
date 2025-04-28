@@ -68,6 +68,7 @@ dependencies {
 
     implementation(libs.ui.tooling.preview)
     implementation(project(":core:network"))
+    implementation(project(":core:ui"))
     debugImplementation(libs.ui.tooling)
 
     androidTestImplementation(libs.ui.test.junit4)
