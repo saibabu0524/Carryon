@@ -29,11 +29,11 @@ class LoginViewmodel @Inject constructor(
 
     private val TAG = this::class.simpleName
 
-    private var _mobileNumber = MutableStateFlow(CustomTextFieldState())
+    private var _mobileNumber = MutableStateFlow(com.saibabui.ui.CustomTextFieldState())
 
     val mobileNumber = _mobileNumber
 
-    private var _mobileOTP = MutableStateFlow(CustomTextFieldState())
+    private var _mobileOTP = MutableStateFlow(com.saibabui.ui.CustomTextFieldState())
 
     val mobileOTP = _mobileOTP
 
