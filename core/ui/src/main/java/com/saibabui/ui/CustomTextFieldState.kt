@@ -1,4 +1,4 @@
-package com.saibabui.auth.presentation.ui.login
+package com.saibabui.ui
 
 data class CustomTextFieldState(
     val value: String = "",
