@@ -1,4 +1,4 @@
-package com.saibabui.auth.presentation.ui.login
+package com.saibabui.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -16,24 +16,23 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.saibabui.auth.R
+import com.saibabui.mylibrary2.R
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
@@ -70,6 +69,7 @@ private val CustomLabelForTextField: @Composable (labelText: String, textColor: 
             fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
     }
 
@@ -88,6 +88,7 @@ fun CustomeTextField(
     supportingText: String,
     internalState: MutableStateFlow<CustomTextFieldState>,
     keyboardType: KeyboardType = KeyboardType.Text,
+    hint: String = "Enter email",
     onValueChange: (String) -> Unit = {}
 ) {
     val state = internalState.collectAsState().value
@@ -96,7 +97,7 @@ fun CustomeTextField(
             supportingText,
             if (state.error.isEmpty()) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
         )
-        TextField(
+        OutlinedTextField(
             value = state.value,
             onValueChange = {
                 onValueChange(it)
@@ -105,9 +106,9 @@ fun CustomeTextField(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Transparent,
                 errorContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedIndicatorColor = LightGray, // Light gray outline when unfocused
                 errorIndicatorColor = MaterialTheme.colorScheme.error,
-                focusedIndicatorColor = MaterialTheme.colorScheme.onBackground,
+                focusedIndicatorColor = LightGray, // Light gray outline when focused
             ),
             modifier = Modifier.fillMaxWidth(),
             isError = state.error.isNotEmpty(),
@@ -125,12 +126,35 @@ fun CustomeTextField(
             },
             maxLines = 1,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            placeholder = {
+                Text(
+                    text = hint,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f) // Lighter color for hint
+                )
+            },
+            shape = RoundedCornerShape(8.dp),
         )
     }
 }
 
+
+@Preview(showBackground = true)
 @Composable
-fun PrimaryButton(buttonText: String, isEnabled: Boolean = true, onClick: () -> Unit) {
+private fun CustomTextFieldPrev() {
+    CustomeTextField(
+        supportingText = "Email",
+        internalState = MutableStateFlow(CustomTextFieldState())
+    )
+}
+
+@Composable
+fun PrimaryButton(
+    buttonText: String,
+    isEnabled: Boolean = true,
+    isLoading: Boolean = false,
+    onClick: () -> Unit,
+) {
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(5.dp),
@@ -145,6 +169,12 @@ fun PrimaryButton(buttonText: String, isEnabled: Boolean = true, onClick: () -> 
             textAlign = TextAlign.Center,
         )
     }
+}
+
+@Preview
+@Composable
+fun PrimaryButtonPreview(modifier: Modifier = Modifier) {
+    PrimaryButton(buttonText = "Login", onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth())
 }
 
 @Composable
@@ -173,17 +203,7 @@ fun SecondaryButton(buttonText: String, onClick: () -> Unit) {
 
 
 @Composable
-fun NavigationText() {
-    Text(
-        text = stringResource(R.string.forgot_password),
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp
-    )
-}
-
-
-@Composable
-fun TopBar(navController: NavController) {
+fun TopBar(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -192,20 +212,15 @@ fun TopBar(navController: NavController) {
         contentAlignment = Alignment.CenterStart
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.back_icon),
-            contentDescription = stringResource(R.string.back_navigation_icon),
+            painter = painterResource(id = R.drawable.google_docs),
+            contentDescription = "",
             modifier = Modifier
                 .height(24.dp)
                 .width(24.dp)
                 .clickable {
-                    navController.popBackStack()
+                    onClick()
                 }
 
         )
     }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun Preview() {
 }
