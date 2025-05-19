@@ -2,7 +2,7 @@ package com.saibabui.main.presentation.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.saibabui.main.presentation.ui.home.Template
+import com.saibabui.ui.Template
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +30,7 @@ class TemplatesViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             _allTemplates.value = listOf(
-                Template("1", "Modern Resume", "Professional", "modern_preview.png"),
+                Template("1", "Modern Resume", "Professional", "modern_preview.png",),
                 Template("2", "Classic CV", "Traditional", "classic_preview.png"),
                 Template("3", "Creative Portfolio", "Creative", "creative_preview.png"),
                 Template("4", "Tech Resume", "Professional", "tech_preview.png"),
