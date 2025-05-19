@@ -13,7 +13,8 @@ import com.saibabui.carryon.navigation.Home as HomeScreen
 fun RootNavigationGraph(navController: NavHostController,navigateToHome : () -> Unit) {
     NavHost(
         navController = navController,
-        startDestination = HomeScreen
+        startDestination = HomeScreen,
+//        startDestination = Authentication
     ) {
         authNavGraph(navController = navController,navigateToHome)
         composable<HomeScreen> {
