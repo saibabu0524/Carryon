@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,9 +47,42 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.saibabui.main.navigation.navigateToResumeScreen
 import com.saibabui.mylibrary2.R
+import com.saibabui.ui.HomePremiumSubscriptionCard
+import com.saibabui.ui.HomeScreenRecentCard
+import com.saibabui.ui.NewResumeCard
 import com.saibabui.ui.PrimaryButton
+import com.saibabui.ui.ProTipCards
+import com.saibabui.ui.RecentActivityCard
 import com.saibabui.ui.SecondaryButton
 
+
+data class RecentCardData(
+    val resumeTitle: String,
+    val template: String,
+    val lastUpdated: String,
+    val completionStatus: String
+)
+
+val sampleRecentCards = listOf(
+    RecentCardData(
+        resumeTitle = "Software Engineer Resume",
+        template = "Modern Template",
+        lastUpdated = "April 25, 2025",
+        completionStatus = "85% Complete"
+    ),
+    RecentCardData(
+        resumeTitle = "Product Manager CV",
+        template = "Professional Template",
+        lastUpdated = "April 20, 2025",
+        completionStatus = "90% Complete"
+    ),
+    RecentCardData(
+        resumeTitle = "Data Scientist Resume",
+        template = "Creative Template",
+        lastUpdated = "April 15, 2025",
+        completionStatus = "75% Complete"
+    )
+)
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
@@ -65,141 +99,206 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewMode
     ) {
         item {
             Text(
-                text = "Welcome, $userName",
+                text = "Welcome back, $userName",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
+                modifier = Modifier,
+                fontWeight = FontWeight.Bold
             )
         }
         item {
             Text(
-                text = "Featured Templates",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
+                text = "Ready to enhance you professional journey?",
+                style = MaterialTheme.typography.labelLarge,
+                modifier = Modifier,
             )
         }
         item {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
+            HomePremiumSubscriptionCard(
+                modifier = Modifier.padding(vertical = 8.dp)
             ) {
-                items(featuredTemplates) { template ->
-                    ResumeTemplateCard(
-                        template = Template(
-                            id = template.id,
-                            name = template.name,
-                            category = template.category,
-                            previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
-                        ),
-                        onClick = {
-                            navController.navigateToResumeScreen()
-                        }
-                    )
-                }
-            }
-        }
-        item {
-            Text(
-                text = "Success Stories",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
-            )
-        }
-        item {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
-            ) {
-                items(featuredTemplates) { template ->
-                    ResumeTemplateCard(
-                        template = Template(
-                            id = template.id,
-                            name = template.name,
-                            category = template.category,
-                            previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
-                        ),
-                        onClick = {
-                            // TODO("Navigation to template screen")
-                        }
-                    )
-                }
-            }
-        }
-        item {
-            Text(
-                text = "Most Used Tools",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier
-            )
-        }
-        item {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
-            ) {
-                items(featuredTemplates) { template ->
-                    ResumeTemplateCard(
-                        template = Template(
-                            id = template.id,
-                            name = template.name,
-                            category = template.category,
-                            previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
-                        ),
-                        onClick = {
-                            // TODO("Navigation to template screen")
-                        }
-                    )
-                }
-            }
-        }
 
-        // Recent Resumes section
-        if (recentResumes.isNotEmpty()) {
-            item {
-                Text(
-                    text = "Recent Resumes",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
+            }
+        }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                NewResumeCard(
+                    modifier = Modifier.weight(1f),
+                    cardTitle = "New Resume",
+                    cardDescription = "create from scratch",
+                    cardIcon = R.drawable.google_docs,
+                    onClick = {
+                        navController.navigateToResumeScreen()
+                    }
                 )
-            }
-            items(recentResumes.take(3)) { resume ->
-                ResumeCard(
-                    resume = resume,
-                    onEditClick = {
-                        // TODO("Navigation to template screen")
-                    },
-                    onViewClick = {
-
+                NewResumeCard(
+                    modifier = Modifier.weight(1f),
+                    cardTitle = "Template",
+                    cardDescription = "Browse design",
+                    cardIcon = R.drawable.google_docs,
+                    onClick = {
+                        navController.navigateToResumeScreen()
                     }
                 )
             }
-            item {
-                PrimaryButton(
-                    onClick = {  },
-                    buttonText = "View All Resumes",
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        } else {
-            item {
+        }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
-                    text = "No resumes yet. Create your first resume!",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    text = "Recent Activity",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
                 )
-                PrimaryButton(
-                    onClick = {  },
-                    buttonText = "Create Resume",
-                    modifier = Modifier.fillMaxWidth()
+                Text(
+                    text = "View All",
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier
                 )
             }
         }
-
-        // Featured Templates section
-
-
-        // Resume Tip section
-        randomTip?.let { tip ->
-            item {
-                ResumeTipCard(tip)
-            }
+        item {
+            HomeScreenRecentCardList(navController)
         }
+        item {
+            ProTipCards(modifier = Modifier.padding(vertical = 16.dp))
+        }
+
+
+        /* item {
+             Text(
+                 text = "Featured Templates",
+                 style = MaterialTheme.typography.titleMedium,
+                 modifier = Modifier
+             )
+         }
+         item {
+             LazyRow(
+                 horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
+             ) {
+                 items(featuredTemplates) { template ->
+                     ResumeTemplateCard(
+                         template = Template(
+                             id = template.id,
+                             name = template.name,
+                             category = template.category,
+                             previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
+                         ),
+                         onClick = {
+                             navController.navigateToResumeScreen()
+                         }
+                     )
+                 }
+             }
+         }
+         item {
+             Text(
+                 text = "Success Stories",
+                 style = MaterialTheme.typography.titleMedium,
+                 modifier = Modifier
+             )
+         }
+         item {
+             LazyRow(
+                 horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
+             ) {
+                 items(featuredTemplates) { template ->
+                     ResumeTemplateCard(
+                         template = Template(
+                             id = template.id,
+                             name = template.name,
+                             category = template.category,
+                             previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
+                         ),
+                         onClick = {
+                             // TODO("Navigation to template screen")
+                         }
+                     )
+                 }
+             }
+         }
+         item {
+             Text(
+                 text = "Most Used Tools",
+                 style = MaterialTheme.typography.titleMedium,
+                 modifier = Modifier
+             )
+         }
+         item {
+             LazyRow(
+                 horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
+             ) {
+                 items(featuredTemplates) { template ->
+                     ResumeTemplateCard(
+                         template = Template(
+                             id = template.id,
+                             name = template.name,
+                             category = template.category,
+                             previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
+                         ),
+                         onClick = {
+                             // TODO("Navigation to template screen")
+                         }
+                     )
+                 }
+             }
+         }
+ 
+         // Recent Resumes section
+         if (recentResumes.isNotEmpty()) {
+             item {
+                 Text(
+                     text = "Recent Resumes",
+                     style = MaterialTheme.typography.titleLarge,
+                     modifier = Modifier.padding(bottom = 8.dp)
+                 )
+             }
+             items(recentResumes.take(3)) { resume ->
+                 ResumeCard(
+                     resume = resume,
+                     onEditClick = {
+                         // TODO("Navigation to template screen")
+                     },
+                     onViewClick = {
+ 
+                     }
+                 )
+             }
+             item {
+                 PrimaryButton(
+                     onClick = {  },
+                     buttonText = "View All Resumes",
+                     modifier = Modifier.fillMaxWidth()
+                 )
+             }
+         } else {
+             item {
+                 Text(
+                     text = "No resumes yet. Create your first resume!",
+                     style = MaterialTheme.typography.bodyLarge,
+                     modifier = Modifier.padding(vertical = 8.dp)
+                 )
+                 PrimaryButton(
+                     onClick = {  },
+                     buttonText = "Create Resume",
+                     modifier = Modifier.fillMaxWidth()
+                 )
+             }
+         }
+ 
+         // Featured Templates section
+ 
+ 
+         // Resume Tip section
+         randomTip?.let { tip ->
+             item {
+                 ResumeTipCard(tip)
+             }
+         }*/
     }
 }
 
@@ -222,7 +321,11 @@ fun ResumeCard(resume: Resume, onEditClick: () -> Unit, onViewClick: () -> Unit)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row {
-                PrimaryButton(onClick = onEditClick, buttonText = "Edit")
+                PrimaryButton(
+                    onClick = onEditClick,
+                    buttonText = "Edit",
+                    modifier = Modifier.fillMaxWidth()
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 SecondaryButton(onClick = onViewClick, buttonText = "View")
             }
@@ -333,18 +436,30 @@ fun ResumeTemplateCard(
     }
 }
 
-
-@Preview
 @Composable
-fun CardPreview(modifier: Modifier = Modifier) {
-    ResumeTemplateCard(
-        template = Template(
-            id = "1",
-            name = "Sample Template",
-            category = "Category",
-            previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
-        )
+fun HomeScreenRecentCardList(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
+        sampleRecentCards.forEach { cardData ->
+            HomeScreenRecentCard(
+                resumeTitle = cardData.resumeTitle,
+                template = cardData.template,
+                lastUpdated = cardData.lastUpdated,
+                completionStatus = cardData.completionStatus,
+                onClick = {
+//                    navController.navigate("resume_detail/${cardData.resumeTitle}")
+                }
+            )
+        }
     }
+}
+
+
+@Preview(showBackground = true, showSystemUi = true,)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(navController = NavController(LocalContext.current))
 }

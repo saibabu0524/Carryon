@@ -1,8 +1,11 @@
 package com.saibabui.ui
 
+import androidx.cardview.widget.CardView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,11 +45,13 @@ import com.saibabui.mylibrary2.R
 fun NewResumeCard(
     modifier: Modifier = Modifier,
     cardTitle: String,
+    cardDescription: String? = null,
     cardIcon: Int,
     onClick: () -> Unit
 ) {
     CardView(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth(),
         onClick = onClick
     ) {
         Column(
@@ -63,8 +68,14 @@ fun NewResumeCard(
             )
             Text(
                 text = cardTitle,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
             )
+            cardDescription?.let {
+                Text(
+                    text = cardDescription,
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
         }
     }
 }
@@ -76,9 +87,14 @@ fun RecentActivityCard(
     resumeTitle: String,
     lastUpdated: String,
     tag: String,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
-    CardView(onClick = { /*TODO*/ }) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() }, // Handle click on the entire card
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -204,16 +220,31 @@ private fun HomePremiumSubscriptionCardPreview() {
     HomePremiumSubscriptionCard(modifier = Modifier, onClick = {})
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun HomeScreenRecentCard(modifier: Modifier = Modifier) {
-    CardView(onClick = { /*TODO*/ }, modifier = Modifier.padding()) {
+fun HomeScreenRecentCard(
+    modifier: Modifier = Modifier,
+    resumeTitle: String,
+    template: String,
+    lastUpdated: String,
+    completionStatus: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
         Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceAround,
-            horizontalAlignment = CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -263,22 +294,23 @@ fun HomeScreenRecentCard(modifier: Modifier = Modifier) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Last updated on April 25,2025",
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
+                    text = "Last updated on $lastUpdated",
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = Color.DarkGray, // Dark gray for secondary text
                     modifier = Modifier.alpha(0.5f)
                 )
                 Box(
-                    modifier = Modifier.background(
-                        shape = RoundedCornerShape(4.dp),
-                        color = Color.LightGray.copy(alpha = 0.5f)
-                    )
+                    modifier = Modifier
+                        .background(
+                            shape = RoundedCornerShape(4.dp),
+                            color = Color.White // White background for status
+                        )
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(4.dp)) // Black border
                 ) {
                     Text(
-                        text = "85% Complete",
+                        text = completionStatus,
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.Black,
+                        color = Color.Black, // Black text
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .padding(4.dp)
@@ -293,7 +325,7 @@ fun HomeScreenRecentCard(modifier: Modifier = Modifier) {
 @Composable
 fun ProTipCards(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(color = Color.LightGray.copy(), shape = RoundedCornerShape(16.dp))
             .padding(16.dp),
@@ -319,7 +351,6 @@ fun ProTipCards(modifier: Modifier = Modifier) {
         )
     }
 }
-
 
 
 @Preview(showBackground = true, showSystemUi = true)
