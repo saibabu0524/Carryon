@@ -56,7 +56,7 @@ android {
 dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
-    implementation(project(":core:database"))
+    implementation(project(":core:datastore"))
     implementation(project(":core:common"))
 
     implementation(project(":feature:auth"))
@@ -82,6 +82,9 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
+    //data store
+    implementation("androidx.datastore:datastore-preferences:1.1.4")
 }
 
 kapt {
