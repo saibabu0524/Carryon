@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
+    implementation(project(":core:datastore"))
     debugImplementation(libs.ui.tooling)
 
     androidTestImplementation(libs.ui.test.junit4)
@@ -81,6 +82,9 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    //data store
+    implementation("androidx.datastore:datastore-preferences:1.1.4")
 }
 
 kapt {

@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.1.10"
-//    id("dagger.hilt.android.plugin") version "2.44"
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -65,6 +66,7 @@ dependencies {
 
     implementation(libs.ui.tooling.preview)
     implementation(project(":core:ui"))
+    implementation(project(":core:datastore"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,4 +81,17 @@ dependencies {
     implementation(libs.androidx.adaptive)
 
     implementation(libs.coil.compose)
+    implementation("io.github.afreakyelf:Pdf-Viewer:2.3.6")
+
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    kapt ("androidx.hilt:hilt-compiler:1.0.0")
+
+    //data store
+    implementation("androidx.datastore:datastore-preferences:1.1.4")
+}
+
+kapt {
+    correctErrorTypes = true
 }
