@@ -2,14 +2,7 @@ package com.saibabui.main.presentation.ui.templates
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -17,17 +10,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,16 +24,15 @@ import coil.compose.rememberAsyncImagePainter
 import com.saibabui.ui.CardView
 import com.saibabui.ui.Template
 
-
 @Composable
 fun TemplatesScreen(
     modifier: Modifier = Modifier,
-    viewModel: TemplatesViewModel = TemplatesViewModel()
+    viewModel: TemplatesViewModel = TemplatesViewModel(),
+    oncClick: () -> Unit
 ) {
     val templates by viewModel.templates.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val categories = listOf("Professional", "Creative", "Traditional", "Minimalist")
-    val currentCategory by viewModel.templates.collectAsState()
 
     Column(
         modifier = modifier
@@ -81,13 +68,12 @@ fun TemplatesScreen(
             items(templates) { template ->
                 ResumeTemplateCard(
                     template = template,
-                    onClick = {}
+                    onClick = {oncClick()}
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun ResumeTemplateCard(
@@ -103,18 +89,19 @@ fun ResumeTemplateCard(
                 modifier = Modifier
                     .background(
                         shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-                        color = Color.DarkGray
+                        color = MaterialTheme.colorScheme.secondaryContainer
                     )
                     .fillMaxWidth()
-                    .aspectRatio(1.5f), // Adjusted to match screenshot proportions
+                    .aspectRatio(1.5f),
                 contentAlignment = Alignment.Center
             ) {
                 val painter = rememberAsyncImagePainter(model = template.previewImage)
                 if (painter.state is coil.compose.AsyncImagePainter.State.Error || painter.state is coil.compose.AsyncImagePainter.State.Empty) {
                     Text(
                         text = "Template Preview",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.White
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
                     )
                 } else {
                     Image(
@@ -137,18 +124,22 @@ fun ResumeTemplateCard(
                 ) {
                     Text(
                         text = template.name,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     )
                     Text(
                         text = template.description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Black
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     )
                 }
                 Icon(
                     imageVector = Icons.Outlined.FavoriteBorder,
                     contentDescription = "Favorite",
-                    tint = Color.Black
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
             Row(
@@ -163,13 +154,13 @@ fun ResumeTemplateCard(
                         modifier = Modifier
                             .background(
                                 shape = RoundedCornerShape(4.dp),
-                                color = Color.LightGray.copy(alpha = 0.5f)
+                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                             )
                     ) {
                         Text(
                             text = tag,
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
                             modifier = Modifier
                                 .padding(horizontal = 8.dp)
                                 .padding(4.dp)
@@ -181,7 +172,6 @@ fun ResumeTemplateCard(
     }
 }
 
-// Reusing TemplateSelectionButton from your previous code
 @Composable
 fun TemplateSelectionButton(
     modifier: Modifier = Modifier,
@@ -191,13 +181,17 @@ fun TemplateSelectionButton(
 ) {
     Button(
         onClick = oncClick,
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color.Black else Color.White,
-            contentColor = if (isSelected) Color.White else Color.Black
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+            contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
         ),
         shape = CircleShape
     ) {
-        Text(text = buttonText)
+        Text(
+            text = buttonText,
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }
 
@@ -222,5 +216,5 @@ fun TemplateScreenPreview() {
             tags = listOf("Creative", "Design")
         )
     )
-    TemplatesScreen()
+    TemplatesScreen{}
 }

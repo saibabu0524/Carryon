@@ -3,17 +3,7 @@ package com.saibabui.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -22,26 +12,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.saibabui.mylibrary2.R
-
 
 // Template data class
 data class Template(
@@ -63,25 +43,26 @@ fun TemplateSelectionButton(
 ) {
     Button(
         onClick = oncClick,
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color.Black else Color.White,
-            contentColor = if (isSelected) Color.White else Color.Black
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+            contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
         ),
         shape = CircleShape,
-        border = BorderStroke(1.dp, Color.LightGray)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
     ) {
-        Text(text = buttonText)
+        Text(
+            text = buttonText,
+            style = MaterialTheme.typography.labelMedium
+        )
     }
 }
 
 @Preview
 @Composable
 private fun TemplateSelectionButtonPreview() {
-    TemplateSelectionButton(buttonText = "Modern", isSelected = true) {
-
-    }
+    TemplateSelectionButton(buttonText = "Modern", isSelected = true) {}
 }
-
 
 @Composable
 fun TemplateTypeCard(
@@ -94,9 +75,10 @@ fun TemplateTypeCard(
             modifier = Modifier
                 .background(
                     shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
-                    color = Color.LightGray.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                 )
-                .fillMaxWidth().height(150.dp),
+                .fillMaxWidth()
+                .height(150.dp),
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -109,7 +91,10 @@ fun TemplateTypeCard(
 
         Text(
             text = template.name,
-            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            ),
             modifier = Modifier.padding(8.dp)
         )
         Box(
@@ -117,13 +102,13 @@ fun TemplateTypeCard(
                 .padding(start = 8.dp, bottom = 8.dp)
                 .background(
                     shape = RoundedCornerShape(4.dp),
-                    color = Color.LightGray.copy(alpha = 0.5f)
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                 )
         ) {
             Text(
                 text = template.category,
                 style = MaterialTheme.typography.labelSmall,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .padding(4.dp)
@@ -145,7 +130,9 @@ fun TemplatesGrid(
         ) {
             Text(
                 text = "No templates found.",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             )
         }
     } else {
@@ -165,4 +152,24 @@ fun TemplatesGrid(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun TemplatesGridPreview() {
+    val sampleTemplates = listOf(
+        Template(
+            id = "1",
+            name = "Modern Resume",
+            category = "Modern",
+            previewImage = "template_preview"
+        ),
+        Template(
+            id = "2",
+            name = "Classic Resume",
+            category = "Classic",
+            previewImage = "template_preview"
+        )
+    )
+    TemplatesGrid(templates = sampleTemplates, onTemplateClick = {})
 }
