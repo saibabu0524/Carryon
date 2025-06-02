@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
     implementation(project(":core:ui"))
     implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
