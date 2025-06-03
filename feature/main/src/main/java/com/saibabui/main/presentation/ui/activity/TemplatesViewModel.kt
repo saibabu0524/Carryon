@@ -2,48 +2,84 @@ package com.saibabui.main.presentation.ui.activity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.saibabui.main.domain.TemplateRepository
 import com.saibabui.ui.Template
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TemplatesViewModel : ViewModel() {
+data class TemplatesUiState(
+    val isLoading: Boolean = false,
+    val templates: List<Template> = emptyList(),
+    val categories: List<String> = emptyList(),
+    val selectedCategory: String? = null,
+    val error: String? = null
+)
+
+@HiltViewModel
+class TemplatesViewModel @Inject constructor(
+    private val templateRepository: TemplateRepository
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(TemplatesUiState())
+    val uiState: StateFlow<TemplatesUiState> = _uiState.asStateFlow()
+
     private val _allTemplates = MutableStateFlow<List<Template>>(emptyList())
-    private val _searchQuery = MutableStateFlow("")
-    private val _selectedCategory = MutableStateFlow<String?>(null)
-
-    val templates: StateFlow<List<Template>> = combine(
-        _allTemplates,
-        _searchQuery,
-        _selectedCategory
-    ) { allTemplates, searchQuery, selectedCategory ->
-        allTemplates.filter { template ->
-            val matchesSearch = template.name.contains(searchQuery, ignoreCase = true)
-            val matchesCategory = selectedCategory == null || template.category == selectedCategory
-            matchesSearch && matchesCategory
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     init {
+        loadTemplates()
+    }
+
+    fun loadTemplates() {
         viewModelScope.launch {
-            _allTemplates.value = listOf(
-                Template("1", "Modern Resume", "Professional", "modern_preview.png",),
-                Template("2", "Classic CV", "Traditional", "classic_preview.png"),
-                Template("3", "Creative Portfolio", "Creative", "creative_preview.png"),
-                Template("4", "Tech Resume", "Professional", "tech_preview.png"),
-                Template("5", "Minimalist CV", "Minimalist", "minimalist_preview.png")
-            )
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+
+            try {
+                val templates = templateRepository.getAllTemplates()
+                val categories = templates.map { it.category }.distinct().sorted()
+
+                _allTemplates.value = templates
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    templates = templates,
+                    categories = categories
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = e.message ?: "Unknown error occurred"
+                )
+            }
         }
     }
 
-    fun setSearchQuery(query: String) {
-        _searchQuery.value = query
+    fun filterByCategory(category: String?) {
+        val filteredTemplates = if (category == null) {
+            _allTemplates.value
+        } else {
+            _allTemplates.value.filter { it.category == category }
+        }
+
+        _uiState.value = _uiState.value.copy(
+            templates = filteredTemplates,
+            selectedCategory = category
+        )
     }
 
-    fun setSelectedCategory(category: String?) {
-        _selectedCategory.value = category
+    fun onTemplateSelected(template: Template) {
+        viewModelScope.launch {
+            try {
+                templateRepository.markTemplateAsUsed(template.id)
+            } catch (e: Exception) {
+                // Log error but don't show to user as it's not critical
+            }
+        }
+    }
+
+    fun refreshTemplates() {
+        loadTemplates()
     }
 }
