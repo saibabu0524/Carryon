@@ -1,157 +1,321 @@
+// OptimizedRecentResumesScreen.kt
 package com.saibabui.main.presentation.ui.transactions
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import com.saibabui.ui.ResumeCard
+import com.saibabui.ui.shimmer.ShimmerResumeCard
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionScreen(
-    navController: NavController
+fun RecentResumesScreen(
+    navController: NavController,
+    viewModel: RecentResumesViewModel = hiltViewModel()
 ) {
-    ResumesScreen(navController = navController)
-}
+    val isLoading by viewModel.isLoading.collectAsState()
+    val resumes by viewModel.resumes.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val showDeleteDialog by viewModel.showDeleteDialog.collectAsState()
 
+    LaunchedEffect(Unit) {
+        // Trigger initial data load if needed
+    }
 
-
-
-@Composable
-fun ResumeItem(
-    resume: Resume,
-    onView: () -> Unit,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
-) {
-    Card(
+    Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        )
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
     ) {
-        Row(
+        // Search Bar
+        SearchBar(
+            query = searchQuery,
+            onQueryChange = viewModel::onSearchQueryChanged,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = resume.name, style = MaterialTheme.typography.titleMedium)
-                Text(
-                    text = "Last modified: ${resume.lastModified}",
-                    style = MaterialTheme.typography.bodyMedium
+                .padding(vertical = 16.dp)
+        )
+
+        // Content
+        when {
+            isLoading -> {
+                ShimmerContent()
+            }
+            error != null -> {
+                error?.let {
+                    ErrorContent(
+                        error = it,
+                        onRetry = {
+                            viewModel.clearError()
+                            viewModel.refreshData()
+                        }
+                    )
+                }
+            }
+            resumes.isEmpty() -> {
+                EmptyContent(
+                    searchQuery = searchQuery,
+                    onCreateResume = {
+                        // Navigate to create resume screen
+                        // navController.navigate("create_resume")
+                    }
                 )
             }
-            IconButton(onClick = onView) {
-                Icon(Icons.Default.Visibility, contentDescription = "View Resume")
+            else -> {
+                ResumesList(
+                    resumes = resumes,
+                    onResumeClick = viewModel::onResumeClick,
+                    onEditClick = viewModel::onEditClick,
+                    onShareClick = viewModel::onShareClick,
+                    onDownloadClick = viewModel::onDownloadClick,
+                    onDeleteClick = viewModel::onDeleteClick
+                )
             }
-            IconButton(onClick = onEdit) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit Resume")
+        }
+    }
+
+    // Delete Confirmation Dialog
+    showDeleteDialog?.let { resume ->
+        DeleteConfirmationDialog(
+            resumeTitle = resume.title,
+            onConfirm = viewModel::confirmDelete,
+            onCancel = viewModel::cancelDelete
+        )
+    }
+}
+
+@Composable
+private fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = query,
+        onValueChange = onQueryChange,
+        placeholder = { Text("Search resumes...") },
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "Search"
+            )
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(
+                    onClick = { onQueryChange("") }
+                ) {
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = "Clear search"
+                    )
+                }
             }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete Resume")
+        },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search
+        ),
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun ShimmerContent() {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(6) { // Show 6 shimmer cards
+            ShimmerResumeCard()
+        }
+    }
+}
+
+@Composable
+private fun ErrorContent(
+    error: String,
+    onRetry: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Oops! Something went wrong",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = error,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.fillMaxWidth(0.6f)
+        ) {
+            Text("Try Again")
+        }
+    }
+}
+
+@Composable
+private fun EmptyContent(
+    searchQuery: String,
+    onCreateResume: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = if (searchQuery.isEmpty()) {
+                "No resumes yet"
+            } else {
+                "No resumes found for \"$searchQuery\""
+            },
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = if (searchQuery.isEmpty()) {
+                "Create your first resume to get started"
+            } else {
+                "Try adjusting your search terms"
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        if (searchQuery.isEmpty()) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = onCreateResume,
+                modifier = Modifier.fillMaxWidth(0.6f)
+            ) {
+                Text("Create Resume")
             }
         }
     }
 }
 
 @Composable
-fun DeleteConfirmationDialog(
+private fun ResumesList(
+    resumes: List<com.saibabui.ui.Resume>,
+    onResumeClick: (com.saibabui.ui.Resume) -> Unit,
+    onEditClick: (com.saibabui.ui.Resume) -> Unit,
+    onShareClick: (com.saibabui.ui.Resume) -> Unit,
+    onDownloadClick: (com.saibabui.ui.Resume) -> Unit,
+    onDeleteClick: (com.saibabui.ui.Resume) -> Unit
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp)
+    ) {
+        items(
+            items = resumes,
+            key = { resume -> resume.id ?: resume.title }
+        ) { resume ->
+            EnhancedResumeCard(
+                resume = resume,
+                onClick = { onResumeClick(resume) },
+                onEditClick = { onEditClick(resume) },
+                onShareClick = { onShareClick(resume) },
+                onDownloadClick = { onDownloadClick(resume) },
+                onDeleteClick = { onDeleteClick(resume) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun EnhancedResumeCard(
+    resume: com.saibabui.ui.Resume,
+    onClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onDownloadClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    ResumeCard(
+        resume = resume,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .clickable(onClick = onClick),
+        onClick = onClick,
+
+    )
+}
+
+@Composable
+private fun DeleteConfirmationDialog(
+    resumeTitle: String,
     onConfirm: () -> Unit,
     onCancel: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onCancel,
-        title = { Text("Delete Resume") },
-        text = { Text("Are you sure you want to delete this resume?") },
+        title = {
+            Text(
+                text = "Delete Resume",
+                style = MaterialTheme.typography.headlineSmall
+            )
+        },
+        text = {
+            Text(
+                text = "Are you sure you want to delete \"$resumeTitle\"? This action cannot be undone.",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
         confirmButton = {
-            Button(onClick = onConfirm) {
+            TextButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
                 Text("Delete")
             }
         },
         dismissButton = {
-            Button(onClick = onCancel) {
+            TextButton(onClick = onCancel) {
                 Text("Cancel")
             }
         }
     )
 }
-
-@Composable
-fun ResumesScreen(
-    navController: NavController,
-    viewModel: ResumesViewModel = viewModel()
-) {
-    val resumes by viewModel.resumes.collectAsState()
-    var resumeToDelete by remember { mutableStateOf<String?>(null) }
-
-        Box(modifier = Modifier) {
-            if (resumes.isEmpty()) {
-                // Empty state
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text("No resumes yet.", style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { }) {
-                        Text("Create your first resume")
-                    }
-                }
-            } else {
-                // List of resumes
-                LazyColumn(
-                    contentPadding = PaddingValues(vertical = 8.dp)
-                ) {
-                    items(resumes) { resume ->
-                        ResumeItem(
-                            resume = resume,
-                            onView = { },
-                            onEdit = { },
-                            onDelete = { resumeToDelete = resume.id }
-                        )
-                    }
-                }
-            }
-
-            // Delete confirmation dialog
-            if (resumeToDelete != null) {
-                DeleteConfirmationDialog(
-                    onConfirm = {
-                        viewModel.deleteResume(resumeToDelete!!)
-                        resumeToDelete = null
-                    },
-                    onCancel = { resumeToDelete = null }
-                )
-            }
-        }
-    }
