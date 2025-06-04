@@ -47,4 +47,24 @@
     <string name="login_button">Login</string>
     <string name="forgot_password_link">Forgot Password?</string>
     <string name="sign_up_link">Don\'t have an account? Sign Up</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="already_have_an_account">Login</string>
+    <string name="create_account_sign_up_using_mobile_number_to_continue_us">
+    Create an account. Sign up using your email to continue.
+    </string>
+    <string name="welcome_back_sign_in_using_email_and_password">Welcome back! Sign in using your email and password to continue.</string>
+    <string name="create_your_resume">Create Your Resume</string>
+    <string name="create_resume_description">Build a professional resume in minutes with our easy-to-use templates.</string>
+    <string name="customize_with_ease">Customize with Ease</string>
+    <string name="customize_resume_description">Personalize your resume with custom sections, fonts, and colors.</string>
+    <string name="share_and_export">Share and Export</string>
+    <string name="share_resume_description">Export your resume as a PDF or share it directly with employers.</string>
+    <string name="carry_your_resume">Carry Your Resume</string>
+    <string name="carry_resume_description">Save your resume to the cloud and access it anytime, anywhere.</string>
+    <string name="latex_support">LaTeX Support</string>
+    <string name="latex_support_description">Generate professional resumes in LaTeX format for high-quality PDF output.</string>
+
 </resources>
