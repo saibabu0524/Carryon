@@ -78,7 +78,7 @@ fun ResumeTemplateCard(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             val list1 = listOf("Modern", "Clean", "Minimal", "Design")
-            for (i in 1..4) {
+            for (i in 0..3) {
                 val text = list1[i]
                 Box(
                     modifier = Modifier
@@ -100,4 +100,10 @@ fun ResumeTemplateCard(modifier: Modifier = Modifier) {
         }
 
     }
+}
+
+@Preview
+@Composable
+fun ResumeTemplateCardPreview(){
+    ResumeTemplateCard()
 }
