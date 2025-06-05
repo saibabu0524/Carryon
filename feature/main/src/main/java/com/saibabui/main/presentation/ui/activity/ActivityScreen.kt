@@ -1,74 +1,189 @@
 package com.saibabui.main.presentation.ui.activity
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.saibabui.main.navigation.navigateToResumeScreen
 import com.saibabui.main.presentation.ui.templates.navigateToTemplatesScreens
 import com.saibabui.main.utils.FilterButtons
+import com.saibabui.ui.Template
 import com.saibabui.ui.TemplatesGrid
-
+import com.saibabui.ui.shimmer.ShimmerTemplateCard
 
 @Composable
 fun TemplateScreen(
-    navController: NavController
-) {
-    val viewModel: TemplatesViewModel = viewModel()
-    TemplatesScreen(navController, viewModel)
-}
-
-@Composable
-fun TemplatesScreen(
     navController: NavController,
-    viewModel: TemplatesViewModel = viewModel()
+    viewModel: TemplatesViewModel = hiltViewModel()
 ) {
-    val templates by viewModel.templates.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
     var selectedCategory by remember { mutableStateOf<String?>(null) }
-    val categories = listOf("Professional", "Creative", "Traditional", "Minimalist")
+
+    LaunchedEffect(Unit) {
+        viewModel.loadTemplates()
+    }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-//        com.saibabui.main.utils.SearchBar(
-//            query = searchQuery,
-//            onQueryChange = {
-//                searchQuery = it
-//                viewModel.setSearchQuery(it)
-//            }
-//        )
-
+        // Filter Buttons
         FilterButtons(
-            categories = categories,
+            categories = uiState.categories,
             selectedCategory = selectedCategory,
-            onCategorySelected = {
-                selectedCategory = it
-                viewModel.setSelectedCategory(it)
+            onCategorySelected = { category ->
+                selectedCategory = category
+                viewModel.filterByCategory(category)
             }
         )
-        
-        TemplatesGrid(
-            templates = templates,
-            modifier = Modifier,
-            onTemplateClick = { template ->
-                navController.navigateToTemplatesScreens()
+
+        // Content
+        when {
+            uiState.isLoading -> {
+                ShimmerTemplatesGrid()
             }
-        )
+
+            uiState.error != null -> {
+                uiState.error?.let {
+                    ErrorContent(
+                        error = it,
+                        onRetry = viewModel::loadTemplates
+                    )
+                }
+            }
+
+            uiState.templates.isEmpty() -> {
+                EmptyContent(
+                    selectedCategory = selectedCategory,
+                    onClearFilter = {
+                        selectedCategory = null
+                        viewModel.filterByCategory(null)
+                    }
+                )
+            }
+
+            else -> {
+                TemplatesGrid(
+                    templates = uiState.templates,
+                    onTemplateClick = { template ->
+                        viewModel.onTemplateSelected(template)
+                        navController.navigateToTemplatesScreens()
+                    }
+                )
+            }
+        }
     }
 }
 
+@Composable
+private fun ShimmerTemplatesGrid() {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(6) { // Show 6 shimmer items
+            ShimmerTemplateCard()
+        }
+    }
+}
 
+@Composable
+private fun ErrorContent(
+    error: String,
+    onRetry: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Failed to load templates",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = error,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = onRetry,
+            modifier = Modifier.fillMaxWidth(0.6f)
+        ) {
+            Text("Try Again")
+        }
+    }
+}
+
+@Composable
+private fun EmptyContent(
+    selectedCategory: String?,
+    onClearFilter: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = if (selectedCategory != null) {
+                "No templates found in \"$selectedCategory\" category"
+            } else {
+                "No templates available"
+            },
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = if (selectedCategory != null) {
+                "Try selecting a different category or clear the filter"
+            } else {
+                "Templates will appear here once they're loaded"
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+
+        if (selectedCategory != null) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedButton(
+                onClick = onClearFilter,
+                modifier = Modifier.fillMaxWidth(0.6f)
+            ) {
+                Text("Clear Filter")
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
