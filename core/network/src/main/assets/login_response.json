@@ -1,6 +1,6 @@
 {
   "status": "success",
-  "message": "OTP verified successfully",
+  "message": "Login successful",
   "data": {
     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "refreshToken": "dGhpcy1pcy1hLXJlZnJlc2gtdG9rZW4..."

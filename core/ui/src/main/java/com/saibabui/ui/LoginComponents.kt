@@ -61,7 +61,7 @@ fun Description(description: String) {
 }
 
 
-private val CustomLabelForTextField: @Composable (labelText: String, textColor: Color) -> Unit =
+val CustomLabelForTextField: @Composable (labelText: String, textColor: Color) -> Unit =
     { text, textColor ->
         Text(
             text = text,
@@ -89,6 +89,8 @@ fun CustomeTextField(
     internalState: MutableStateFlow<CustomTextFieldState>,
     keyboardType: KeyboardType = KeyboardType.Text,
     hint: String = "Enter email",
+    modifier: Modifier = Modifier,
+    visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None,
     onValueChange: (String) -> Unit = {}
 ) {
     val state = internalState.collectAsState().value
@@ -125,7 +127,6 @@ fun CustomeTextField(
                 }
             },
             maxLines = 1,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             placeholder = {
                 Text(
                     text = hint,
@@ -134,6 +135,7 @@ fun CustomeTextField(
                 )
             },
             shape = RoundedCornerShape(8.dp),
+            visualTransformation = visualTransformation
         )
     }
 }
