@@ -1,434 +1,135 @@
+// Updated HomeScreen.kt
 package com.saibabui.main.presentation.ui.home
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Badge
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.saibabui.main.navigation.navigateToResumeScreen
 import com.saibabui.mylibrary2.R
-import com.saibabui.ui.HomePremiumSubscriptionCard
-import com.saibabui.ui.HomeScreenRecentCard
-import com.saibabui.ui.NewResumeCard
-import com.saibabui.ui.PrimaryButton
-import com.saibabui.ui.ProTipCards
-import com.saibabui.ui.RecentActivityCard
-import com.saibabui.ui.SecondaryButton
-
-
-data class RecentCardData(
-    val resumeTitle: String,
-    val template: String,
-    val lastUpdated: String,
-    val completionStatus: String
-)
-
-val sampleRecentCards = listOf(
-    RecentCardData(
-        resumeTitle = "Software Engineer Resume",
-        template = "Modern Template",
-        lastUpdated = "April 25, 2025",
-        completionStatus = "85% Complete"
-    ),
-    RecentCardData(
-        resumeTitle = "Product Manager CV",
-        template = "Professional Template",
-        lastUpdated = "April 20, 2025",
-        completionStatus = "90% Complete"
-    ),
-    RecentCardData(
-        resumeTitle = "Data Scientist Resume",
-        template = "Creative Template",
-        lastUpdated = "April 15, 2025",
-        completionStatus = "75% Complete"
-    )
-)
+import com.saibabui.ui.*
+import com.saibabui.ui.shimmer.*
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: HomeViewModel = viewModel()) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
+) {
+    val isLoading by viewModel.isLoading.collectAsState()
     val userName by viewModel.userName.collectAsState()
     val recentResumes by viewModel.recentResumes.collectAsState()
     val resumeTips by viewModel.resumeTips.collectAsState()
     val featuredTemplates by viewModel.featuredTemplates.collectAsState()
 
-    val randomTip = remember { resumeTips.randomOrNull() }
+    val randomTip = remember(resumeTips) { viewModel.getRandomTip() }
 
-    LazyColumn(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp) // Increased spacing for clarity
-    ) {
-        item {
-            Text(
-                text = "Welcome back, $userName",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        item {
-            Text(
-                text = "Ready to enhance you professional journey?",
-                style = MaterialTheme.typography.labelLarge,
-                modifier = Modifier,
-            )
-        }
-        item {
-            HomePremiumSubscriptionCard(
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-
-            }
-        }
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                NewResumeCard(
-                    modifier = Modifier.weight(1f),
-                    cardTitle = "New Resume",
-                    cardDescription = "create from scratch",
-                    cardIcon = R.drawable.google_docs,
-                    onClick = {
-                        navController.navigateToResumeScreen()
-                    }
-                )
-                NewResumeCard(
-                    modifier = Modifier.weight(1f),
-                    cardTitle = "Template",
-                    cardDescription = "Browse design",
-                    cardIcon = R.drawable.google_docs,
-                    onClick = {
-                        navController.navigateToResumeScreen()
-                    }
-                )
-            }
-        }
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Recent Activity",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                )
-                Text(
-                    text = "View All",
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                )
-            }
-        }
-        item {
-            HomeScreenRecentCardList(navController)
-        }
-        item {
-            ProTipCards(modifier = Modifier.padding(vertical = 16.dp))
-        }
-
-
-        /* item {
-             Text(
-                 text = "Featured Templates",
-                 style = MaterialTheme.typography.titleMedium,
-                 modifier = Modifier
-             )
-         }
-         item {
-             LazyRow(
-                 horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
-             ) {
-                 items(featuredTemplates) { template ->
-                     ResumeTemplateCard(
-                         template = Template(
-                             id = template.id,
-                             name = template.name,
-                             category = template.category,
-                             previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
-                         ),
-                         onClick = {
-                             navController.navigateToResumeScreen()
-                         }
-                     )
-                 }
-             }
-         }
-         item {
-             Text(
-                 text = "Success Stories",
-                 style = MaterialTheme.typography.titleMedium,
-                 modifier = Modifier
-             )
-         }
-         item {
-             LazyRow(
-                 horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
-             ) {
-                 items(featuredTemplates) { template ->
-                     ResumeTemplateCard(
-                         template = Template(
-                             id = template.id,
-                             name = template.name,
-                             category = template.category,
-                             previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
-                         ),
-                         onClick = {
-                             // TODO("Navigation to template screen")
-                         }
-                     )
-                 }
-             }
-         }
-         item {
-             Text(
-                 text = "Most Used Tools",
-                 style = MaterialTheme.typography.titleMedium,
-                 modifier = Modifier
-             )
-         }
-         item {
-             LazyRow(
-                 horizontalArrangement = Arrangement.spacedBy(8.dp), // Space between cards
-             ) {
-                 items(featuredTemplates) { template ->
-                     ResumeTemplateCard(
-                         template = Template(
-                             id = template.id,
-                             name = template.name,
-                             category = template.category,
-                             previewImage = "https://careers.dasa.ncsu.edu/wp-content/uploads/sites/37/2023/07/Communications-major-resume-example.jpg"
-                         ),
-                         onClick = {
-                             // TODO("Navigation to template screen")
-                         }
-                     )
-                 }
-             }
-         }
- 
-         // Recent Resumes section
-         if (recentResumes.isNotEmpty()) {
-             item {
-                 Text(
-                     text = "Recent Resumes",
-                     style = MaterialTheme.typography.titleLarge,
-                     modifier = Modifier.padding(bottom = 8.dp)
-                 )
-             }
-             items(recentResumes.take(3)) { resume ->
-                 ResumeCard(
-                     resume = resume,
-                     onEditClick = {
-                         // TODO("Navigation to template screen")
-                     },
-                     onViewClick = {
- 
-                     }
-                 )
-             }
-             item {
-                 PrimaryButton(
-                     onClick = {  },
-                     buttonText = "View All Resumes",
-                     modifier = Modifier.fillMaxWidth()
-                 )
-             }
-         } else {
-             item {
-                 Text(
-                     text = "No resumes yet. Create your first resume!",
-                     style = MaterialTheme.typography.bodyLarge,
-                     modifier = Modifier.padding(vertical = 8.dp)
-                 )
-                 PrimaryButton(
-                     onClick = {  },
-                     buttonText = "Create Resume",
-                     modifier = Modifier.fillMaxWidth()
-                 )
-             }
-         }
- 
-         // Featured Templates section
- 
- 
-         // Resume Tip section
-         randomTip?.let { tip ->
-             item {
-                 ResumeTipCard(tip)
-             }
-         }*/
-    }
-}
-
-
-@Composable
-fun ResumeCard(resume: Resume, onEditClick: () -> Unit, onViewClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        )
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = resume.name, style = MaterialTheme.typography.titleMedium)
-            Text(
-                text = "Last modified: ${resume.lastModified}",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row {
-                PrimaryButton(
-                    onClick = onEditClick,
-                    buttonText = "Edit",
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                SecondaryButton(onClick = onViewClick, buttonText = "View")
-            }
-        }
-    }
-}
-
-@Composable
-fun ResumeTipCard(tip: Tip) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        )
-    ) {
-        Text(
-            text = tip.text,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyLarge
-        )
-    }
-}
-
-@Composable
-fun ResumeTemplateCard(
-    modifier: Modifier = Modifier,
-    template: Template,
-    onClick: () -> Unit
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val roundedCornerShape = RoundedCornerShape(12.dp)
-    val elevation = animateDpAsState(
-        targetValue = if (interactionSource.collectIsPressedAsState().value) 2.dp else 8.dp,
-        label = "cardElevation"
-    )
-
-    Surface(
-        modifier = modifier
-            .width(240.dp)  // Fixed width
-            .height(360.dp)
-            .clip(roundedCornerShape)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = ripple(),
-                onClick = onClick
-            ),
-        shape = roundedCornerShape,
-        shadowElevation = elevation.value,
-        color = MaterialTheme.colorScheme.surface
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
+    if (isLoading) {
+        ShimmerHomeScreen()
+    } else {
+        LazyColumn(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Image Container
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .clip(roundedCornerShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(template.previewImage)
-                        .crossfade(true)
-                        .build(),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = "Template preview",
-                    placeholder = painterResource(R.drawable.google_docs),
-                    error = painterResource(R.drawable.google_docs),
-                    modifier = Modifier.fillMaxSize()
+            item {
+                Text(
+                    text = "Welcome back, $userName",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Text Content
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            item {
                 Text(
-                    text = template.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    text = "Ready to enhance your professional journey?",
+                    style = MaterialTheme.typography.labelLarge,
                 )
+            }
 
-                Spacer(modifier = Modifier.height(4.dp))
+            item {
+                HomePremiumSubscriptionCard(
+                    modifier = Modifier.padding(vertical = 8.dp)
+                ) {
+                    // Handle premium subscription click
+                }
+            }
 
-                Badge(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    NewResumeCard(
+                        modifier = Modifier.weight(1f),
+                        cardTitle = "New Resume",
+                        cardDescription = "Create from scratch",
+                        cardIcon = R.drawable.google_docs,
+                        onClick = {
+                            navController.navigateToResumeScreen()
+                        }
+                    )
+                    NewResumeCard(
+                        modifier = Modifier.weight(1f),
+                        cardTitle = "Template",
+                        cardDescription = "Browse designs",
+                        cardIcon = R.drawable.google_docs,
+                        onClick = {
+                            navController.navigateToResumeScreen()
+                        }
+                    )
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "FREE",
-                        style = MaterialTheme.typography.labelSmall
+                        text = "Recent Activity",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        text = "View All",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
+            if (recentResumes.isNotEmpty()) {
+                items(recentResumes) { cardData ->
+                    HomeScreenRecentCard(
+                        resumeTitle = cardData.resumeTitle,
+                        template = cardData.template,
+                        lastUpdated = cardData.lastUpdated,
+                        completionStatus = cardData.completionStatus,
+                        onClick = {
+                            // Navigate to resume detail screen
+                            // navController.navigate("resume_detail/${cardData.id}")
+                        }
+                    )
+                }
+            } else {
+                item {
+                    EmptyRecentActivityCard(
+                        onCreateResumeClick = {
+                            navController.navigateToResumeScreen()
+                        }
+                    )
+                }
+            }
+
+            randomTip?.let { tip ->
+                item {
+                    ProTipCards(
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        tip.text
                     )
                 }
             }
@@ -437,29 +138,67 @@ fun ResumeTemplateCard(
 }
 
 @Composable
-fun HomeScreenRecentCardList(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
+fun EmptyRecentActivityCard(
+    modifier: Modifier = Modifier,
+    onCreateResumeClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        sampleRecentCards.forEach { cardData ->
-            HomeScreenRecentCard(
-                resumeTitle = cardData.resumeTitle,
-                template = cardData.template,
-                lastUpdated = cardData.lastUpdated,
-                completionStatus = cardData.completionStatus,
-                onClick = {
-//                    navController.navigate("resume_detail/${cardData.resumeTitle}")
-                }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "No recent resumes",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Create your first resume to get started",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            PrimaryButton(
+                onClick = onCreateResumeClick,
+                buttonText = "Create Resume",
+                modifier = Modifier.fillMaxWidth(0.6f)
             )
         }
     }
 }
 
-
-@Preview(showBackground = true, showSystemUi = true,)
+// Extension function for pull-to-refresh (optional)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenPreview() {
-    HomeScreen(navController = NavController(LocalContext.current))
+fun HomeScreenWithRefresh(
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel<HomeViewModel>()
+) {
+    val isLoading by viewModel.isLoading.collectAsState()
+    var isRefreshing by remember { mutableStateOf(false) }
+
+    // Handle pull-to-refresh
+    LaunchedEffect(isLoading) {
+        if (isLoading) {
+            isRefreshing = false
+        }
+    }
+
+    // You can implement pull-to-refresh with SwipeRefresh or similar component
+    HomeScreen(navController = navController, viewModel = viewModel)
 }

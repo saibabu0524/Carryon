@@ -8,7 +8,9 @@ import androidx.navigation.compose.rememberNavController
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Home() {
+fun Home(
+    onNavigateToLogout: suspend () -> Unit = {}
+) {
     val navController = rememberNavController()
-    HomeScreenWithBottomNavigation(navController)
+    HomeScreenWithBottomNavigation(navController, onNavigateToLogout =onNavigateToLogout )
 }

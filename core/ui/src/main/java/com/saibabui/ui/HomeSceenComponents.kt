@@ -1,44 +1,29 @@
 package com.saibabui.ui
 
-import androidx.cardview.widget.CardView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.WorkspacePremium
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImagePainter.State.Empty.painter
 import com.saibabui.mylibrary2.R
 
 @Composable
@@ -50,8 +35,7 @@ fun NewResumeCard(
     onClick: () -> Unit
 ) {
     CardView(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         onClick = onClick
     ) {
         Column(
@@ -64,22 +48,27 @@ fun NewResumeCard(
             Icon(
                 painter = painterResource(id = cardIcon),
                 contentDescription = "Card Icon",
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
+                tint = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = cardTitle,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             )
             cardDescription?.let {
                 Text(
                     text = cardDescription,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun RecentActivityCard(
@@ -92,8 +81,9 @@ fun RecentActivityCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() }, // Handle click on the entire card
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             modifier = Modifier
@@ -108,18 +98,21 @@ fun RecentActivityCard(
             ) {
                 Text(
                     text = resumeTitle,
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 )
                 Box(
                     modifier = Modifier.background(
                         shape = RoundedCornerShape(4.dp),
-                        color = Color.LightGray.copy(alpha = 0.5f)
+                        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                     )
                 ) {
                     Text(
                         text = tag,
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
@@ -127,7 +120,7 @@ fun RecentActivityCard(
             Text(
                 text = "Last updated on $lastUpdated",
                 style = MaterialTheme.typography.labelLarge,
-                color = Color.Black.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
             )
         }
     }
@@ -138,42 +131,49 @@ fun RecentActivityCard(
 fun RecentActivityCardPreview(modifier: Modifier = Modifier) {
     RecentActivityCard(
         resumeTitle = "Resume Title",
-        lastUpdated = "April 25,2025",
+        lastUpdated = "April 25, 2025",
         tag = "Modern",
-        onClick = {})
+        onClick = {}
+    )
 }
 
-
 @Composable
-fun CardView(modifier: Modifier = Modifier, onClick: () -> Unit, content: @Composable () -> Unit) {
+fun CardView(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .then(modifier),
         border = BorderStroke(
             width = 1.dp,
-            color = Color.LightGray,
+            color = MaterialTheme.colorScheme.outline
         ),
         onClick = onClick,
-        colors = CardDefaults.cardColors().copy(
-            containerColor = Color.White,
-            contentColor = Color.Black
-        ), shape = RoundedCornerShape(8.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        shape = RoundedCornerShape(8.dp)
     ) {
         content()
     }
-
 }
 
-
 @Composable
-fun HomePremiumSubscriptionCard(modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun HomePremiumSubscriptionCard(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .then(modifier),
-        colors = CardDefaults.cardColors().copy(
-            containerColor = Color.Black, contentColor = Color.White
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -190,11 +190,16 @@ fun HomePremiumSubscriptionCard(modifier: Modifier = Modifier, onClick: () -> Un
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Premium Features", style = MaterialTheme.typography.titleMedium.copy(
+                    text = "Premium Features",
+                    style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold
                     )
                 )
-                Icon(Icons.Filled.WorkspacePremium, contentDescription = "Premium icon")
+                Icon(
+                    Icons.Filled.WorkspacePremium,
+                    contentDescription = "Premium icon",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
             Text(
                 text = "Get access to 50+ premium templates and AI-powered suggestions",
@@ -205,9 +210,9 @@ fun HomePremiumSubscriptionCard(modifier: Modifier = Modifier, onClick: () -> Un
                 buttonText = "Upgrade Now",
                 onClick = { },
                 modifier = Modifier,
-                buttonColors = ButtonDefaults.buttonColors().copy(
-                    containerColor = Color.White,
-                    contentColor = Color.Black
+                buttonColors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -235,7 +240,7 @@ fun HomeScreenRecentCard(
             .padding(vertical = 8.dp)
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -258,7 +263,7 @@ fun HomeScreenRecentCard(
                     Box(
                         modifier = Modifier.background(
                             shape = RoundedCornerShape(4.dp),
-                            color = Color.LightGray.copy(alpha = 0.5f)
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
                         )
                     ) {
                         Icon(
@@ -266,18 +271,26 @@ fun HomeScreenRecentCard(
                             contentDescription = "Icon",
                             modifier = Modifier
                                 .size(32.dp)
-                                .padding(8.dp)
+                                .padding(8.dp),
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
                     Column(
                         modifier = Modifier.padding(bottom = 8.dp)
                     ) {
                         Text(
-                            text = "Software Engineer Resume",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
-                            modifier = Modifier
+                            text = resumeTitle,
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         )
-                        Text(text = "Modern Template")
+                        Text(
+                            text = template,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
                     }
                 }
                 Icon(
@@ -285,7 +298,8 @@ fun HomeScreenRecentCard(
                     contentDescription = "Edit",
                     modifier = Modifier
                         .size(32.dp)
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
             Row(
@@ -295,22 +309,24 @@ fun HomeScreenRecentCard(
             ) {
                 Text(
                     text = "Last updated on $lastUpdated",
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
-                    color = Color.DarkGray, // Dark gray for secondary text
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
                     modifier = Modifier.alpha(0.5f)
                 )
                 Box(
                     modifier = Modifier
                         .background(
                             shape = RoundedCornerShape(4.dp),
-                            color = Color.White // White background for status
+                            color = MaterialTheme.colorScheme.surface
                         )
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(4.dp)) // Black border
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
                 ) {
                     Text(
                         text = completionStatus,
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.Black, // Black text
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier
                             .padding(horizontal = 8.dp)
                             .padding(4.dp)
@@ -321,13 +337,15 @@ fun HomeScreenRecentCard(
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun ProTipCards(modifier: Modifier = Modifier) {
+fun ProTipCards(modifier: Modifier = Modifier, tip: String) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = Color.LightGray.copy(), shape = RoundedCornerShape(16.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                shape = RoundedCornerShape(16.dp)
+            )
             .padding(16.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -339,22 +357,45 @@ fun ProTipCards(modifier: Modifier = Modifier) {
         ) {
             Image(
                 Icons.Filled.Lightbulb,
-                contentDescription = "",
+                contentDescription = "Pro tip icon",
                 modifier = Modifier.size(20.dp),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillBounds,
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
             )
-            Text(text = "Pro tip", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Pro tip",
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
         }
         Text(
-            text = "Use action verbs and quality achievements to make your resume stand out",
-            modifier = Modifier
+            text = tip,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         )
     }
 }
 
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun NewResumeCardPreview() {
-    NewResumeCard(cardTitle = "New Resume", cardIcon = R.drawable.google_docs, onClick = {})
+    NewResumeCard(
+        cardTitle = "New Resume",
+        cardIcon = R.drawable.google_docs,
+        onClick = {}
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun HomeScreenRecentCardPreview() {
+    HomeScreenRecentCard(
+        resumeTitle = "Software Engineer Resume",
+        template = "Modern Template",
+        lastUpdated = "April 25, 2025",
+        completionStatus = "In Progress",
+        onClick = {}
+    )
 }
