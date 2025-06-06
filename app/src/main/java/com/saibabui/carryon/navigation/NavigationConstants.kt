@@ -1,6 +1,7 @@
 package com.saibabui.carryon.navigation
 
 import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,4 +16,4 @@ object Authentication
 object Home
 
 
-fun NavController.navigateToHome() = navigate(Home)
+fun NavController.navigateToHome(navOptions: NavOptionsBuilder.() -> Unit = {}) = navigate(Home)

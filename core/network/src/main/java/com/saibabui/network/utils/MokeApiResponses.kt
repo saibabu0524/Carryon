@@ -5,8 +5,8 @@ import java.io.IOException
 
 fun getMockDataFromUrl(url: String,context: Context): String {
     val assetName = when {
-        url.endsWith("/generate-otp") -> "auth_user_login_response.json"
-        url.endsWith("/verify-otp") -> "auth_verify_otp_response.json"
+        url.contains("login") -> "login_response.json"
+        url.contains("signup") -> "login_response.json"
         else -> "default.json"
     }
     return loadJsonFromAssets(assetName,context)
