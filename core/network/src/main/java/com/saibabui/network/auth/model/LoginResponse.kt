@@ -6,14 +6,14 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LoginResponse(
-    val status : String,
-    val message : String,
-    val data : LoginData
+    val status: String,
+    val message: String,
+    val data: LoginData
 ) : Parcelable
-
 
 
 @Parcelize
 data class LoginData(
-    val otp : String
+    val accessToken: String,
+    val refreshToken: String
 ) : Parcelable
