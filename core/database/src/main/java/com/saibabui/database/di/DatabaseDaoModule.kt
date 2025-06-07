@@ -1,6 +1,8 @@
 package com.saibabui.database.di
 
 import com.saibabui.database.AppDatabase
+import com.saibabui.database.dao.ResumeDao
+import com.saibabui.database.dao.TemplateDao
 import com.saibabui.database.dao.UserDao
 import dagger.Module
 import dagger.Provides
@@ -14,4 +16,14 @@ internal object DatabaseDaoModule {
     fun providesTopicsDao(
         database: AppDatabase,
     ): UserDao = database.userDao()
+
+    @Provides
+    fun provideResumeDao(database: AppDatabase): ResumeDao {
+        return database.resumeDao()
+    }
+
+    @Provides
+    fun provideTemplateDao(
+        database: AppDatabase,
+    ): TemplateDao = database.templateDao()
 }
