@@ -5,9 +5,8 @@ import com.saibabui.network.utils.BaseRepository
 import com.saibabui.network.auth.model.ApiResponse
 import com.saibabui.network.auth.model.LoginRequest
 import com.saibabui.network.auth.model.LoginResponse
+import com.saibabui.network.auth.model.SignUpRequest
 import com.saibabui.network.auth.model.TestResponse
-import com.saibabui.network.auth.model.VerifyOTPRequest
-import com.saibabui.network.auth.model.VerifyOTPResponse
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepositoryImpl(
@@ -17,13 +16,25 @@ class AuthRepositoryImpl(
         return apiCall { authService.root() }
     }
 
-    override fun loginWithMobileNumber(mobileNumber: String): Flow<ApiResponse<LoginResponse>> {
-        return apiCall { authService.loginWithMobileNumber(LoginRequest(mobileNumber)) }
+    override fun loginWithEmail(email: String, password: String): Flow<ApiResponse<LoginResponse>> {
+        return apiCall { authService.loginWithEmail(LoginRequest(email, password)) }
     }
 
-    override fun verifyMobileOtp(verifyOTPRequest: VerifyOTPRequest): Flow<ApiResponse<VerifyOTPResponse>> {
+    override fun signUpWithEmail(
+        firstName: String,
+        lastName: String,
+        email: String,
+        password: String
+    ): Flow<ApiResponse<LoginResponse>> {
         return apiCall {
-            authService.verifyMobileOTP(verifyOTPRequest)
+            authService.signUpWithEmail(
+                SignUpRequest(
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    password = password
+                )
+            )
         }
     }
 }
