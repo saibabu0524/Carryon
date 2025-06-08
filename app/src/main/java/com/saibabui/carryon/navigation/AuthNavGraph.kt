@@ -8,8 +8,8 @@ import com.saibabui.auth.presentation.ui.dashboard.DashBoardScreen
 import com.saibabui.auth.presentation.ui.dashboard.DashboardNavigation
 import com.saibabui.auth.presentation.ui.login.LoginRoute
 import com.saibabui.auth.presentation.ui.login.LoginScreen
-import com.saibabui.auth.presentation.ui.verify.VerifyMobileNumberScreen
-import com.saibabui.auth.presentation.ui.verify.VerifyScreenNavigation
+import com.saibabui.auth.presentation.ui.signup.SignUpRoute
+import com.saibabui.auth.presentation.ui.signup.SignUpScreen
 
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController, navigateToHome: () -> Unit) {
@@ -18,14 +18,16 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController, navigateToHom
     ) {
         composable<LoginRoute> {
             LoginScreen(
-                navController
+                navController,navigateToHome
+            )
+        }
+        composable<SignUpRoute> {
+            SignUpScreen(
+                navController,navigateToHome
             )
         }
         composable<DashboardNavigation> {
             DashBoardScreen(navController = navController)
-        }
-        composable<VerifyScreenNavigation> {
-            VerifyMobileNumberScreen(navController, navigateToHome)
         }
     }
 }
