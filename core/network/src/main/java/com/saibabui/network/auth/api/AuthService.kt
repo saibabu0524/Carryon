@@ -32,8 +32,8 @@ interface AuthService {
     @POST("/auth/logout")
     suspend fun logout(@Body refreshTokenRequest: RefreshTokenRequest): MessageResponse
 
-    @GET("/auth/me")
-    suspend fun getCurrentUser(): SuccessResponse<Map<String, Any>>
+//    @GET("/auth/me")
+//    suspend fun getCurrentUser(): SuccessResponse<Map<String, Any>>
 
     @POST("/auth/forgot-password")
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): MessageResponse

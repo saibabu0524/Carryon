@@ -1,40 +1,52 @@
 package com.saibabui.network.auth.repositories
 
 import com.saibabui.network.auth.api.AuthService
-import com.saibabui.network.utils.BaseRepository
 import com.saibabui.network.auth.model.ApiResponse
-import com.saibabui.network.auth.model.LoginRequest
-import com.saibabui.network.auth.model.LoginResponse
-import com.saibabui.network.auth.model.SignUpRequest
-import com.saibabui.network.auth.model.TestResponse
+import com.saibabui.network.auth.model.ChangePasswordRequest
+import com.saibabui.network.auth.model.ForgotPasswordRequest
+import com.saibabui.network.auth.model.MessageResponse
+import com.saibabui.network.auth.model.RefreshTokenRequest
+import com.saibabui.network.auth.model.ResetPasswordRequest
+import com.saibabui.network.auth.model.TokenResponse
+import com.saibabui.network.auth.model.UserCreate
+import com.saibabui.network.auth.model.UserLogin
+import com.saibabui.network.utils.BaseRepository
 import kotlinx.coroutines.flow.Flow
 
 class AuthRepositoryImpl(
     private val authService: AuthService
 ) : AuthRepository, BaseRepository() {
-    override fun testServer(): Flow<ApiResponse<TestResponse>> {
-        return apiCall { authService.root() }
+
+    override suspend fun
+            register(userCreate: UserCreate): Flow<ApiResponse<TokenResponse>> {
+        return apiCall { authService.register(userCreate) }
     }
 
-    override fun loginWithEmail(email: String, password: String): Flow<ApiResponse<LoginResponse>> {
-        return apiCall { authService.loginWithEmail(LoginRequest(email, password)) }
+    override suspend fun login(userLogin: UserLogin): Flow<ApiResponse<TokenResponse>> {
+        return apiCall { authService.login(userLogin) }
     }
 
-    override fun signUpWithEmail(
-        firstName: String,
-        lastName: String,
-        email: String,
-        password: String
-    ): Flow<ApiResponse<LoginResponse>> {
-        return apiCall {
-            authService.signUpWithEmail(
-                SignUpRequest(
-                    firstName = firstName,
-                    lastName = lastName,
-                    email = email,
-                    password = password
-                )
-            )
-        }
+    override suspend fun refreshToken(refreshTokenRequest: RefreshTokenRequest): Flow<ApiResponse<TokenResponse>> {
+        return apiCall { authService.refreshToken(refreshTokenRequest) }
+    }
+
+    override suspend fun logout(refreshTokenRequest: RefreshTokenRequest): Flow<ApiResponse<MessageResponse>> {
+        return apiCall { authService.logout(refreshTokenRequest) }
+    }
+
+//    override suspend fun getCurrentUser(): Flow<ApiResponse<Map<String, Any>>> {
+//        return apiCall { authService.getCurrentUser() }
+//    }
+
+    override suspend fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Flow<ApiResponse<MessageResponse>> {
+        return apiCall { authService.forgotPassword(forgotPasswordRequest) }
+    }
+
+    override suspend fun resetPassword(resetPasswordRequest: ResetPasswordRequest): Flow<ApiResponse<MessageResponse>> {
+        return apiCall { authService.resetPassword(resetPasswordRequest) }
+    }
+
+    override suspend fun changePassword(changePasswordRequest: ChangePasswordRequest): Flow<ApiResponse<MessageResponse>> {
+        return apiCall { authService.changePassword(changePasswordRequest) }
     }
 }

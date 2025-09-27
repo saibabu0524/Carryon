@@ -21,7 +21,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideRetrofit(@ApplicationContext context: Context): Retrofit {
-        return RetrofitClient.createRetrofit(context, isDebug = true, useMock = true)
+        return RetrofitClient.createRetrofit(context, isDebug = true, useMock = false)
     }
 
     @Provides

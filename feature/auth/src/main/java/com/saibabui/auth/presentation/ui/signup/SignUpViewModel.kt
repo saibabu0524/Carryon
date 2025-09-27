@@ -11,6 +11,8 @@ import com.saibabui.database.dao.UserDao
 import com.saibabui.database.entities.User
 import com.saibabui.datastore.UserPreferences
 import com.saibabui.network.auth.model.ApiResponse
+import com.saibabui.network.auth.model.TokenResponse
+import com.saibabui.network.auth.model.UserCreate
 import com.saibabui.network.auth.repositories.AuthRepository
 import com.saibabui.ui.CustomTextFieldState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,7 +62,7 @@ class SignUpViewModel @Inject constructor(
     private val _confirmPassword = MutableStateFlow(CustomTextFieldState())
     val confirmPassword = _confirmPassword
 
-    private val _signUpState = MutableStateFlow<UiState<SignUpResponse>>(UiState.Idle)
+    private val _signUpState = MutableStateFlow<UiState<TokenResponse>>(UiState.Idle)
     val signUpState = _signUpState
 
     fun onEvent(event: SignUpFormEvent) {
@@ -123,49 +125,49 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpFormEvent.Submit -> {
                 if (_firstName.value.isValid && _lastName.value.isValid && _email.value.isValid && _password.value.isValid && _confirmPassword.value.isValid) {
-                    signUp()
+                    register()
                 }
             }
         }
     }
 
-    private fun signUp() {
-        viewModelScope.launch {
-            authRepository.signUpWithEmail(
-                firstName = _firstName.value.value,
-                lastName = _lastName.value.value,
-                email = _email.value.value,
-                password = _password.value.value
-            ).collectLatest { response ->
-                when (response) {
-                    is ApiResponse.Loading -> _signUpState.value = UiState.Loading
-                    is ApiResponse.Success -> {
-                        dataStore.updateAccessToken(response.data.data.accessToken)
-                        dataStore.updateRefreshToken(response.data.data.refreshToken)
-                        viewModelScope.launch(
-                            Dispatchers.IO
-                        ) {
-                            userDao.insertAll(
-                                User(
-                                    firstName = _firstName.value.value,
-                                    lastName = _lastName.value.value,
-                                    email = _email.value.value,
-                                    phone = null,
-                                    address = null
-                                )
-                            )
-                        }
-                        _signUpState.value = UiState.Success(
-                            SignUpResponse(
-                                message = "Sign up successful",
-                                userId = response.data.data.accessToken
+data class SignUpResponse(
+    val data: TokenResponse
+)
+
+private fun register() {
+    viewModelScope.launch {
+        authRepository.register(
+            UserCreate(
+                fullName = _firstName.value.value + " " + _lastName.value.value,
+            email = _email.value.value,
+            password = _password.value.value
+        )
+        ).collectLatest { response ->
+            when (response) {
+                is ApiResponse.Loading -> _signUpState.value = UiState.Loading
+                is ApiResponse.Success -> {
+                    dataStore.updateAccessToken(response.data.data?.accessToken ?: "")
+                    dataStore.updateRefreshToken(response.data.data?.refreshToken ?: "")
+                    viewModelScope.launch(
+                        Dispatchers.IO
+                    ) {
+                        userDao.insertAll(
+                            User(
+                                firstName = _firstName.value.value,
+                                lastName = _lastName.value.value,
+                                email = _email.value.value,
+                                phone = null,
+                                address = null
                             )
                         )
                     }
-
-                    is ApiResponse.Error -> _signUpState.value = UiState.Error(response.message)
+                    _signUpState.value = UiState.Success(response.data)
                 }
+
+                is ApiResponse.Error -> _signUpState.value = UiState.Error(response.message)
             }
         }
     }
+}
 }

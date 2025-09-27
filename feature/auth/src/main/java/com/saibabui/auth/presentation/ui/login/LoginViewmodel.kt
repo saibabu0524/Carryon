@@ -8,6 +8,8 @@ import com.saibabui.auth.utils.UiState
 import com.saibabui.datastore.UserPreferences
 import com.saibabui.network.auth.model.ApiResponse
 import com.saibabui.network.auth.model.LoginResponse
+import com.saibabui.network.auth.model.TokenResponse
+import com.saibabui.network.auth.model.UserLogin
 import com.saibabui.network.auth.repositories.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,10 +37,10 @@ class LoginViewModel @Inject constructor(
     val email = _email
 
     private val _password = MutableStateFlow(com.saibabui.ui.CustomTextFieldState())
-    val password= _password
+    val password = _password
 
-    private val _loginState = MutableStateFlow<UiState<LoginResponse>>(UiState.Idle)
-    val loginState: StateFlow<UiState<LoginResponse>> = _loginState.asStateFlow()
+    private val _loginState = MutableStateFlow<UiState<TokenResponse>>(UiState.Idle)
+    val loginState: StateFlow<UiState<TokenResponse>> = _loginState.asStateFlow()
 
     fun validate(event: LoginFormEvent) {
         when (event) {
@@ -50,6 +52,7 @@ class LoginViewModel @Inject constructor(
                     isValid = emailValidationResult.isSuccessful
                 )
             }
+
             is LoginFormEvent.PasswordChanged -> {
                 val passwordValidationResult = validatePassword.execute(event.password)
                 _password.value = _password.value.copy(
@@ -58,9 +61,10 @@ class LoginViewModel @Inject constructor(
                     isValid = passwordValidationResult.isSuccessful
                 )
             }
+
             is LoginFormEvent.Submit -> {
                 if (_email.value.isValid && _password.value.isValid) {
-                    loginWithEmail()
+                    login()
                 } else {
                     validateEmail.execute(_email.value.value)
                     validatePassword.execute(_password.value.value)
@@ -69,26 +73,28 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun loginWithEmail() {
-        viewModelScope.launch {
-            authRepository.loginWithEmail(
-                email = _email.value.value,
-                password = _password.value.value
-            ).collectLatest {
-                when (it) {
-                    is ApiResponse.Error -> {
-                        _loginState.value = UiState.Error(it.message)
-                    }
-                    is ApiResponse.Loading -> {
-                        _loginState.value = UiState.Loading
-                    }
-                    is ApiResponse.Success -> {
-                        _loginState.value = UiState.Success(it.data)
-                        dataStore.updateAccessToken(it.data.data.accessToken)
-                        dataStore.updateRefreshToken(it.data.data.refreshToken)
-                    }
+private fun login() {
+    viewModelScope.launch {
+        authRepository.login(
+            UserLogin(
+            email = _email.value.value,
+            password = _password.value.value
+        )
+        ).collectLatest {
+            when (it) {
+                is ApiResponse.Error -> {
+                    _loginState.value = UiState.Error(it.message)
+                }
+                is ApiResponse.Loading -> {
+                    _loginState.value = UiState.Loading
+                }
+                is ApiResponse.Success -> {
+                    _loginState.value = UiState.Success(it.data)
+                    it.data.data?.accessToken?.let { it1 -> dataStore.updateAccessToken(it1) }
+                    it.data.data?.refreshToken?.let { it1 -> dataStore.updateRefreshToken(it1) }
                 }
             }
         }
     }
+}
 }

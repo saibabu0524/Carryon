@@ -71,7 +71,6 @@ data class TokenData(
 
 data class UserCreate(
     val email: String,
-    val username: String? = null,
     @SerializedName("full_name")
     val fullName: String? = null,
     val password: String,
