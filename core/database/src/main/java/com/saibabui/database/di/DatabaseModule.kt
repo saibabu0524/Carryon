@@ -3,6 +3,7 @@ package com.saibabui.database.di
 import android.content.Context
 import androidx.room.Room
 import com.saibabui.database.AppDatabase
+import com.saibabui.database.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,5 +22,7 @@ object DatabaseModule {
     ) = Room.databaseBuilder(
         context,
         AppDatabase::class.java, "user-database"
-    ).build()
+    )
+    .fallbackToDestructiveMigration() // For development - in production, use proper migrations
+    .build()
 }

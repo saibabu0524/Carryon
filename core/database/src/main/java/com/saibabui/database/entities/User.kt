@@ -70,3 +70,15 @@ data class Skill(
     @ColumnInfo(name = "skill_name") val skillName: String?,
     @ColumnInfo(name = "proficiency") val proficiency: String?
 )
+
+// New UserEntity to match backend API specification
+@Entity(tableName = "users")
+data class UserEntity(
+    @PrimaryKey
+    val id: Int,
+    val email: String,
+    val fullName: String? = null,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+    val role: String = "user"
+)

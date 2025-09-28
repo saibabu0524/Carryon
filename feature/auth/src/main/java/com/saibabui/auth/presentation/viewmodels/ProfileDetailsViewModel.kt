@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.saibabui.auth.utils.UiState
 import com.saibabui.network.auth.model.ApiResponse
-import com.saibabui.network.home.model.UserProfileDetails
+import com.saibabui.network.home.model.ProfileResponse
 import com.saibabui.network.home.repositories.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,8 +19,8 @@ class ProfileDetailsViewModel @Inject constructor(
     private val homeRepository: HomeRepository
 ) : ViewModel() {
 
-    private val _profileDetailsState = MutableStateFlow<UiState<UserProfileDetails>>(UiState.Idle)
-    val profileDetailsState: StateFlow<UiState<UserProfileDetails>> = _profileDetailsState.asStateFlow()
+    private val _profileDetailsState = MutableStateFlow<UiState<ProfileResponse>>(UiState.Idle)
+    val profileDetailsState: StateFlow<UiState<ProfileResponse>> = _profileDetailsState.asStateFlow()
 
     fun getProfileDetails() {
         viewModelScope.launch {

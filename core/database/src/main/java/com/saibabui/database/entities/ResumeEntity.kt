@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "resumes")
 data class ResumeEntity(
-    @PrimaryKey val id: String,
+    @PrimaryKey val id: String,  // Keep original String ID to maintain compatibility
     val title: String,
     val templateName: String,
     val templateId: String,

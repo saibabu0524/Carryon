@@ -11,16 +11,52 @@ import com.saibabui.network.auth.model.SuccessResponse
 import com.saibabui.network.auth.model.TokenResponse
 import com.saibabui.network.auth.model.UserCreate
 import com.saibabui.network.auth.model.UserLogin
+import com.saibabui.network.home.model.ProfileResponse
 import com.saibabui.network.utils.BaseRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
+import retrofit2.Response
+import java.io.IOException
+import org.json.JSONException
+import org.json.JSONObject
 
 class AuthRepositoryImpl(
     private val authService: AuthService
 ) : AuthRepository, BaseRepository() {
 
-    override suspend fun
-            register(userCreate: UserCreate): Flow<ApiResponse<TokenResponse>> {
+    // Custom apiCall for handling SuccessResponse wrapper
+    private fun <T> apiCallWithSuccessResponse(apiCall: suspend () -> Response<SuccessResponse<T>>): Flow<ApiResponse<T>> = flow {
+        emit(ApiResponse.Loading)
+        try {
+            val response = apiCall()
+            if (response.isSuccessful) {
+                val successResponse = response.body()
+                if (successResponse != null && successResponse.data != null) {
+                    emit(ApiResponse.Success(successResponse.data))
+                } else {
+                    emit(ApiResponse.Error("Empty response data"))
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = if (errorBody.isNullOrEmpty()) {
+                    response.message()
+                } else {
+                    try {
+                        JSONObject(errorBody).getString("message")
+                    } catch (e: JSONException) {
+                        response.message()
+                    }
+                }
+                emit(ApiResponse.Error(errorMessage ?: "Unknown error", response.code()))
+            }
+        } catch (e: IOException) {
+            emit(ApiResponse.Error("Network error, please try again"))
+        } catch (e: Exception) {
+            emit(ApiResponse.Error("Unexpected error: ${e.localizedMessage}"))
+        }
+    }
+
+    override suspend fun register(userCreate: UserCreate): Flow<ApiResponse<TokenResponse>> {
         return apiCall { authService.register(userCreate) }
     }
 
@@ -36,9 +72,9 @@ class AuthRepositoryImpl(
         return apiCall { authService.logout(refreshTokenRequest) }
     }
 
-//    override suspend fun getCurrentUser(): Flow<ApiResponse<Map<String, Any>>> {
-//        return apiCall { authService.getCurrentUser() }
-//    }
+    override suspend fun getCurrentUser(): Flow<ApiResponse<ProfileResponse>> {
+        return apiCallWithSuccessResponse { authService.getCurrentUser() }
+    }
 
     override suspend fun forgotPassword(forgotPasswordRequest: ForgotPasswordRequest): Flow<ApiResponse<MessageResponse>> {
         return apiCall { authService.forgotPassword(forgotPasswordRequest) }
@@ -53,17 +89,7 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun googleLogin(): Flow<ApiResponse<Map<String, Any>>> {
-        return apiCall { authService.googleLogin() }
-            .map { apiResponse ->
-                when (apiResponse) {
-                    is ApiResponse.Success -> {
-                        val successResponse = apiResponse.data as? com.saibabui.network.auth.model.SuccessResponse<Map<String, Any>>
-                        ApiResponse.Success(successResponse?.data ?: emptyMap())
-                    }
-                    is ApiResponse.Error -> apiResponse
-                    is ApiResponse.Loading -> apiResponse
-                }
-            }
+        return apiCallWithSuccessResponse { authService.googleLogin() }
     }
 
     override suspend fun googleCallback(code: String): Flow<ApiResponse<TokenResponse>> {

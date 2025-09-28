@@ -13,6 +13,7 @@ import com.saibabui.network.auth.model.TestResponse
 import com.saibabui.network.auth.model.TokenResponse
 import com.saibabui.network.auth.model.UserCreate
 import com.saibabui.network.auth.model.UserLogin
+import com.saibabui.network.home.model.ProfileResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,14 +34,14 @@ interface AuthService {
     @POST("/auth/logout")
     suspend fun logout(@Body refreshTokenRequest: RefreshTokenRequest): Response<MessageResponse>
 
-//    @GET("/auth/me")
-//    suspend fun getCurrentUser(): SuccessResponse<Map<String, Any>>
+    @GET("/auth/me")
+    suspend fun getCurrentUser(): Response<SuccessResponse<ProfileResponse>>
 
     @POST("/auth/forgot-password")
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): Response<MessageResponse>
 
     @POST("/auth/reset-password")
-    suspend fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Response<MessageResponse>
+    suspend fun resetPassword(@Body resetPasswordRequest : ResetPasswordRequest): Response<MessageResponse>
 
     @POST("/auth/change-password")
     suspend fun changePassword(@Body changePasswordRequest: ChangePasswordRequest): Response<MessageResponse>
@@ -56,5 +57,4 @@ interface AuthService {
 
     @GET("/health")
     suspend fun healthCheck(): Response<Any>
-
 }
