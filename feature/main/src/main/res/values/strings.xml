@@ -2,6 +2,9 @@
 <resources>
     <string name="home_nav_lable">Home</string>
     <string name="activity_nav_lable">Activity</string>
-    <string name="transactions_nav_lable">History</string>
+    <string name="transactions_nav_lable">Resumes</string>
+    <string name="notifications_nav_label">Notifications</string>
+    <string name="collaboration_nav_label">Collaboration</string>
     <string name="profile_nav_lable">Profile</string>
+    <string name="templates_nav_label">Templates</string>
 </resources>

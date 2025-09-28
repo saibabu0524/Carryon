@@ -2,6 +2,12 @@ package com.saibabui.main.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.saibabui.main.navigation.graphs.ProfileGraph
+import com.saibabui.main.navigation.graphs.ResumeGraph
+import com.saibabui.main.navigation.graphs.ActivityGraph
+import com.saibabui.main.navigation.graphs.NotificationGraph
+import com.saibabui.main.navigation.graphs.CollaborationGraph
+import com.saibabui.main.navigation.graphs.TemplateGraph
 import kotlinx.serialization.Serializable
 
 
@@ -11,13 +17,22 @@ sealed class Home(val route: String) {
     object HomeScreenDestination : Home("home_screen")
 
     @Serializable
-    object ActivityDestination : Home("activity")
+    object ActivityDestination : Home(ActivityGraph.ROUTE)
 
     @Serializable
-    object TransactionsDestination : Home("transactions")
+    object TransactionsDestination : Home(ResumeGraph.ROUTE)
 
     @Serializable
-    object ProfileScreenDestination : Home("profile_screen")
+    object ProfileScreenDestination : Home(ProfileGraph.ROUTE)
+    
+    @Serializable
+    object NotificationDestination : Home(NotificationGraph.ROUTE)
+    
+    @Serializable
+    object CollaborationDestination : Home(CollaborationGraph.ROUTE)
+    
+    @Serializable
+    object TemplateDestination : Home(TemplateGraph.ROUTE)
 }
 
 

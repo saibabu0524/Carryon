@@ -1,24 +1,17 @@
 package com.saibabui.main.navigation
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.*
+import com.saibabui.main.navigation.actions.NavigationActions
+import com.saibabui.main.navigation.animations.AnimatedNavHost
+import com.saibabui.main.navigation.graphs.*
 import com.saibabui.main.presentation.ui.activity.TemplateScreen
 import com.saibabui.main.presentation.ui.home.HomeScreen
 import com.saibabui.main.presentation.ui.pdfviewer.PdfViewerScreen
@@ -26,7 +19,6 @@ import com.saibabui.main.presentation.ui.profile.ProfileScreen
 import com.saibabui.main.presentation.ui.resumedetails.ResumeForm
 import com.saibabui.main.presentation.ui.resumedetails.ResumeFormScreen
 import com.saibabui.main.presentation.ui.resumedetails.navigateToResumeFormNavigation
-
 import com.saibabui.main.presentation.ui.templates.TemplatesScreen
 import com.saibabui.main.presentation.ui.transactions.RecentResumesScreen
 import com.saibabui.main.utils.PDFViewerScreen
@@ -39,16 +31,25 @@ fun HomeScreenWithBottomNavigation(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val navigationActions = remember(navController) {
+        NavigationActions(navController)
+    }
+    
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                when (currentDestination?.route) {
-                    Home.HomeScreenDestination.route -> Text(text = "Home")
-                    Home.ProfileScreenDestination.route -> Text(text = "Profile")
-                    Home.ActivityDestination.route -> Text(text = "My Resumes")
-                    Home.TransactionsDestination.route -> Text(text = "Templates")
+            TopAppBar(
+                title = {
+                    when (currentDestination?.route) {
+                        Home.HomeScreenDestination.route -> Text(text = "Home")
+                        Home.ProfileScreenDestination.route -> Text(text = "Profile")
+                        Home.ActivityDestination.route -> Text(text = "Activity")
+                        Home.TransactionsDestination.route -> Text(text = "Resumes")
+                        Home.NotificationDestination.route -> Text(text = "Notifications")
+                        Home.CollaborationDestination.route -> Text(text = "Collaboration")
+                        Home.TemplateDestination.route -> Text(text = "Templates")
+                    }
                 }
-            })
+            )
         },
         bottomBar = {
             NavigationBar {
@@ -58,12 +59,61 @@ fun HomeScreenWithBottomNavigation(
                         label = { Text(text = stringResource(id = screen.resId)) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.destination.route } == true,
                         onClick = {
-                            navController.navigate(screen.destination.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                            when (screen) {
+                                MainNavDestination.HOME -> {
+                                    navController.navigate(Home.HomeScreenDestination.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 }
-                                launchSingleTop = true
-                                restoreState = true
+                                MainNavDestination.ACTIVITY -> {
+                                    navController.navigate(ActivityGraph.ROUTE) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                                MainNavDestination.TRANSACTIONS -> {
+                                    navController.navigate(ResumeGraph.ROUTE) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                                MainNavDestination.NOTIFICATIONS -> {
+                                    navController.navigate(NotificationGraph.ROUTE) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                                MainNavDestination.COLLABORATION -> {
+                                    navController.navigate(CollaborationGraph.ROUTE) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                                MainNavDestination.PROFILE -> {
+                                    navController.navigate(Home.ProfileScreenDestination.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
                             }
                         }
                     )
@@ -71,32 +121,36 @@ fun HomeScreenWithBottomNavigation(
             }
         }
     ) { paddingValues ->
-        NavHost(
+        AnimatedNavHost(
             navController = navController,
             startDestination = Home.HomeScreenDestination.route,
             modifier = Modifier.padding(paddingValues)
         ) {
+            // Home screen navigation
             composable(route = Home.HomeScreenDestination.route) {
                 HomeScreen(navController)
             }
+            
+            // Profile screen navigation
             composable(route = Home.ProfileScreenDestination.route) {
-//                ProfileScreen(navController)
                 ProfileScreen(onNavigateToLogout = onNavigateToLogout)
             }
-            composable(route = Home.ActivityDestination.route) {
-                TemplateScreen(navController)
-            }
-            composable(route = Home.TransactionsDestination.route) {
-                RecentResumesScreen(navController)
-            }
+            
+            // Feature graphs
+            activityGraph(navController = navController)
+            resumeGraph(navController = navController)
+            notificationGraph(navController = navController)
+            collaborationGraph(navController = navController)
+            profileGraph(navController = navController)
+            templateGraph(navController = navController)
+            
+            // Existing composables from the previous code...
             composable<ResumePreviewScreen> {
                 PDFViewerScreen(
                     pdfUrl = "https://www.overleaf.com/latex/templates/rendercv-engineeringresumes-theme/shwqvsxdgkjy.pdf"
                 )
-//                PdfViewerScreen(
-//
-//                )
             }
+            
             composable<TemplatesScreen> {
                 TemplatesScreen {
                     navController.navigate(ResumeFormScreen) {
@@ -107,10 +161,11 @@ fun HomeScreenWithBottomNavigation(
                     }
                 }
             }
+            
             composable<ResumeFormScreen> {
                 ResumeForm {
                     navController.navigateToResumeFormNavigation(
-                        navOptions = NavOptions.Builder()
+                        navOptions = androidx.navigation.NavOptions.Builder()
                             .setPopUpTo(navController.graph.findStartDestination().id, true)
                             .build()
                     )
