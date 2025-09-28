@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.saibabui.auth.R
+
 import com.saibabui.auth.utils.TopAppBarComposable
 import com.saibabui.auth.utils.UiState
 import com.saibabui.ui.CustomeTextField
@@ -67,7 +68,7 @@ fun ForgotPasswordScreen(
 
     Scaffold(
         topBar = {
-            TopAppBarComposable(arrowBackIcon = com.saibabui.ui.R.drawable.back_icon) {
+            TopAppBarComposable(arrowBackIcon = R.drawable.back_icon) {
                 navController.popBackStack()
             }
         }

@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
-    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
     id("com.google.dagger.hilt.android")
 }
 
@@ -61,10 +61,6 @@ dependencies {
 
     dependencies {
         implementation("com.google.dagger:hilt-android:2.51.1")
-        kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+        ksp("com.google.dagger:hilt-android-compiler:2.51.1")
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }
