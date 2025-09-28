@@ -11,7 +11,7 @@ class HomeRepositoryImpl(
 ) : HomeRepository, BaseRepository() {
     override fun getProfileDetails(): Flow<ApiResponse<UserProfileDetails>> {
         return apiCall {
-            homeService.getProfileDetails()
+            homeService.getProfileDetails() as retrofit2.Response<UserProfileDetails>
         }
     }
 }

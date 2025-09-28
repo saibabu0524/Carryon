@@ -79,12 +79,21 @@ fun SignUpScreenBody(
     val context = LocalContext.current
 
     LaunchedEffect(key1 = signUpState) {
-        if (signUpState is UiState.Success) {
+        if (signUpState is UiState.Success<*>) {
+            val message = try {
+                (signUpState as? UiState.Success<SignUpResponse>)
+                    ?.data
+                    ?.message ?: "Success"
+            } catch (e: Exception) {
+                "Success"
+            }
+
             Toast.makeText(
                 context,
-                (signUpState as UiState.Success<SignUpResponse>).data.message,
+                message,
                 Toast.LENGTH_SHORT
             ).show()
+
             navigateToHome()
         }
     }

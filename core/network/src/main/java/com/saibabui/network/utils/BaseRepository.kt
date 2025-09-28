@@ -3,19 +3,36 @@ package com.saibabui.network.utils
 import com.saibabui.network.auth.model.ApiResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 
 abstract class BaseRepository {
 
-    protected fun <T> apiCall(apiCall: suspend () -> T): Flow<ApiResponse<T>> = flow {
+    protected fun <T> apiCall(apiCall: suspend () -> Response<T>): Flow<ApiResponse<T>> = flow {
         emit(ApiResponse.Loading)
         try {
             val response = apiCall()
-            emit(ApiResponse.Success(response))
-            println("api hit step-3")
-        } catch (e: HttpException) {
-            emit(ApiResponse.Error(e.message ?: "HTTP error", e.code()))
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(ApiResponse.Success(it))
+                } ?: emit(ApiResponse.Error("Empty response body", response.code()))
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = if (errorBody.isNullOrEmpty()) {
+                    response.message()
+                } else {
+                    // Assuming the error body is a JSON with a "message" field
+                    try {
+                        JSONObject(errorBody).getString("message")
+                    } catch (e: JSONException) {
+                        response.message()
+                    }
+                }
+                emit(ApiResponse.Error(errorMessage, response.code()))
+            }
         } catch (e: IOException) {
             emit(ApiResponse.Error("Network error, please try again"))
         } catch (e: Exception) {
