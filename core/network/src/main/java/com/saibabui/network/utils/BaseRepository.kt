@@ -24,7 +24,6 @@ abstract class BaseRepository {
                 val errorMessage = if (errorBody.isNullOrEmpty()) {
                     response.message()
                 } else {
-                    // Assuming the error body is a JSON with a "message" field
                     try {
                         JSONObject(errorBody).getString("message")
                     } catch (e: JSONException) {

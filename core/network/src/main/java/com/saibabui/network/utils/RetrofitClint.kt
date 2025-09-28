@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
     private const val BASE_URL = "https://9ed1fe7109e2.ngrok-free.app/"
@@ -16,6 +17,10 @@ object RetrofitClient {
         }
 
         val builder = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS) // connection timeout
+            .readTimeout(30, TimeUnit.SECONDS)    // socket read timeout
+            .writeTimeout(30, TimeUnit.SECONDS)   // socket write timeout
+
         if (useMock) {
             builder.addInterceptor(MockInterceptor(context))
         }

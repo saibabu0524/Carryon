@@ -21,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val resumeDao: ResumeDao
 ) : ViewModel() {
 
-    private val _isLoading = MutableStateFlow(true)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _userName = MutableStateFlow("User")
@@ -64,7 +64,7 @@ class HomeViewModel @Inject constructor(
     private fun loadHomeData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _isLoading.value = true
+//                _isLoading.value = true
 
                 // Simulate minimum loading time for better UX
                 delay(1000)
