@@ -25,6 +25,16 @@ interface HomeRepository {
     suspend fun filterResumes(filters: Map<String, String>, page: Int, limit: Int): Flow<ApiResponse<List<ResumeResponse>>>
     suspend fun generateResumeFromTemplate(templateId: String, title: String, userData: String?): Flow<ApiResponse<ResumeResponse>>
     
+    // Template Management
+    suspend fun getTemplates(): Flow<ApiResponse<List<Map<String, Any>>>>
+    suspend fun getMyTemplates(): Flow<ApiResponse<List<Map<String, Any>>>>
+    suspend fun createCustomTemplate(
+        templateName: String,
+        templateDescription: String,
+        category: String?,
+        file: MultipartBody.Part
+    ): Flow<ApiResponse<Map<String, Any>>>
+    
     // Activity & Analytics
     suspend fun getActivityHistory(page: Int, limit: Int, actionType: String?): Flow<ApiResponse<List<ActivityResponse>>>
     suspend fun getResumeAnalytics(resumeId: Int): Flow<ApiResponse<Map<String, Any>>>

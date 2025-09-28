@@ -133,4 +133,20 @@ interface HomeService {
         @Path("resume_id") resumeId: Int,
         @Path("user_id") userId: Int
     ): Response<SuccessResponse<Map<String, Any>>>
+
+    // Template Management Endpoints
+    @GET("/api/home/templates")
+    suspend fun getTemplates(): Response<SuccessResponse<List<Map<String, Any>>>>
+
+    @GET("/api/home/templates/my-templates")
+    suspend fun getMyTemplates(): Response<SuccessResponse<List<Map<String, Any>>>>
+
+    @Multipart
+    @POST("/api/home/templates/custom")
+    suspend fun createCustomTemplate(
+        @Query("template_name") templateName: String,
+        @Query("template_description") templateDescription: String,
+        @Query("category") category: String? = null,
+        @Part file: MultipartBody.Part
+    ): Response<SuccessResponse<Map<String, Any>>>
 }

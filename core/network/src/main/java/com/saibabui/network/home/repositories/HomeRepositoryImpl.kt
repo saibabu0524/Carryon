@@ -183,4 +183,27 @@ class HomeRepositoryImpl(
             homeService.removeCollaborator(resumeId, userId)
         }
     }
+
+    override suspend fun getTemplates(): Flow<ApiResponse<List<Map<String, Any>>>> {
+        return apiCallWithSuccessResponse {
+            homeService.getTemplates()
+        }
+    }
+
+    override suspend fun getMyTemplates(): Flow<ApiResponse<List<Map<String, Any>>>> {
+        return apiCallWithSuccessResponse {
+            homeService.getMyTemplates()
+        }
+    }
+
+    override suspend fun createCustomTemplate(
+        templateName: String,
+        templateDescription: String,
+        category: String?,
+        file: MultipartBody.Part
+    ): Flow<ApiResponse<Map<String, Any>>> {
+        return apiCallWithSuccessResponse {
+            homeService.createCustomTemplate(templateName, templateDescription, category, file)
+        }
+    }
 }
