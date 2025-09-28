@@ -91,6 +91,12 @@ dependencies {
 
     //data store
     implementation("androidx.datastore:datastore-preferences:1.1.4")
+
+    implementation(project(":core:network"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
+
 }
 
 kapt {

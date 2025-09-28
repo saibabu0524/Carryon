@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface HomeRepository {
-    fun getProfileDetails(): Flow<ApiResponse<UserProfileDetails>>
+    suspend fun getProfileDetails(): Flow<ApiResponse<UserProfileDetails>>
 }

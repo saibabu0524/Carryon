@@ -7,11 +7,13 @@ import com.saibabui.network.auth.model.ForgotPasswordRequest
 import com.saibabui.network.auth.model.MessageResponse
 import com.saibabui.network.auth.model.RefreshTokenRequest
 import com.saibabui.network.auth.model.ResetPasswordRequest
+import com.saibabui.network.auth.model.SuccessResponse
 import com.saibabui.network.auth.model.TokenResponse
 import com.saibabui.network.auth.model.UserCreate
 import com.saibabui.network.auth.model.UserLogin
 import com.saibabui.network.utils.BaseRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class AuthRepositoryImpl(
     private val authService: AuthService
@@ -48,5 +50,23 @@ class AuthRepositoryImpl(
 
     override suspend fun changePassword(changePasswordRequest: ChangePasswordRequest): Flow<ApiResponse<MessageResponse>> {
         return apiCall { authService.changePassword(changePasswordRequest) }
+    }
+
+    override suspend fun googleLogin(): Flow<ApiResponse<Map<String, Any>>> {
+        return apiCall { authService.googleLogin() }
+            .map { apiResponse ->
+                when (apiResponse) {
+                    is ApiResponse.Success -> {
+                        val successResponse = apiResponse.data as? com.saibabui.network.auth.model.SuccessResponse<Map<String, Any>>
+                        ApiResponse.Success(successResponse?.data ?: emptyMap())
+                    }
+                    is ApiResponse.Error -> apiResponse
+                    is ApiResponse.Loading -> apiResponse
+                }
+            }
+    }
+
+    override suspend fun googleCallback(code: String): Flow<ApiResponse<TokenResponse>> {
+        return apiCall { authService.googleCallback(code) }
     }
 }

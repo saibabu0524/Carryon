@@ -1,13 +1,28 @@
 package com.saibabui.main.presentation.ui.profile
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+//import com.saibabui.auth.utils.UiState
+import com.saibabui.datastore.UserPreferences
+import com.saibabui.network.auth.model.ApiResponse
+import com.saibabui.network.auth.model.RefreshTokenRequest
+import com.saibabui.network.auth.repositories.AuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 // ViewModel to manage account data and logic
-class AccountViewModel : ViewModel() {
+@HiltViewModel
+class AccountViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
+    private val dataStore: UserPreferences
+) : ViewModel() {
     private val _userProfile = MutableStateFlow(
         UserProfile(
             name = "John Doe",
@@ -56,6 +71,10 @@ class AccountViewModel : ViewModel() {
     private val _isDarkModeEnabled = MutableStateFlow(false)
     val isDarkModeEnabled: StateFlow<Boolean> = _isDarkModeEnabled
 
+    // Logout state
+//    private val _logoutState = MutableStateFlow<UiState<Any>>(UiState.Idle)
+//    val logoutState: StateFlow<UiState<Any>> = _logoutState.asStateFlow()
+
     // Update user profile details
     fun updateProfile(name: String, email: String) {
         _userProfile.value = _userProfile.value.copy(name = name, email = email)
@@ -71,9 +90,31 @@ class AccountViewModel : ViewModel() {
         _isDarkModeEnabled.value = enabled
     }
 
-    // Handle logout (placeholder for actual logic)
+    // Handle logout
     fun logout() {
-
+        viewModelScope.launch {
+            val refreshTokenFlow = dataStore.refreshToken
+            val refreshToken = runBlocking { refreshTokenFlow.first() }
+            authRepository.logout(RefreshTokenRequest(refreshToken)).collectLatest { response ->
+                when (response) {
+//                    is ApiResponse.Error -> {
+//                        _logoutState.value = UiState.Error(response.message)
+//                    }
+//                    is ApiResponse.Loading -> {
+//                        _logoutState.value = UiState.Loading
+//                    }
+//                    is ApiResponse.Success -> {
+//                        _logoutState.value = UiState.Success(response.data)
+//                        // Clear tokens from data store
+//                        dataStore.updateAccessToken("")
+//                        dataStore.updateRefreshToken("")
+//                    }
+                    is ApiResponse.Error -> {}
+                    ApiResponse.Loading -> {}
+                    is ApiResponse.Success<*> -> {}
+                }
+            }
+        }
     }
 
     fun updateProfile(

@@ -94,6 +94,41 @@ fun SecondaryButton(buttonText: String, onClick: () -> Unit, modifier: Modifier 
     }
 }
 
+@Composable
+fun GoogleSignInButton(
+    onClick: () -> Unit, 
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.White,
+            contentColor = Color.Black,
+            disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+            disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+        ),
+        enabled = enabled
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 8.dp)
+        ) {
+            // Note: You would typically use the Google logo here
+            // For now, using a placeholder icon or text
+            Text(
+                text = "Sign in with Google",
+                fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+            )
+        }
+    }
+}
+
 
 @Preview
 @Composable

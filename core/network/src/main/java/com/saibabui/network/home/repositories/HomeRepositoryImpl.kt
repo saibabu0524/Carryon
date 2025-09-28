@@ -9,9 +9,9 @@ import kotlinx.coroutines.flow.Flow
 class HomeRepositoryImpl(
     private val homeService: HomeService
 ) : HomeRepository, BaseRepository() {
-    override fun getProfileDetails(): Flow<ApiResponse<UserProfileDetails>> {
-        return apiCall {
-            homeService.getProfileDetails() as retrofit2.Response<UserProfileDetails>
+    override suspend fun getProfileDetails(): Flow<ApiResponse<UserProfileDetails>> {
+        return apiCall { 
+            homeService.getProfileDetails()
         }
     }
 }

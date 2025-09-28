@@ -30,18 +30,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.saibabui.auth.R
+import com.saibabui.auth.presentation.ui.forgotpassword.navigateToForgotPassword
 import com.saibabui.auth.presentation.ui.signup.navigateToSignUp
 import com.saibabui.auth.utils.TopAppBarComposable
 import com.saibabui.auth.utils.UiState
 import com.saibabui.network.auth.model.LoginResponse
+import com.saibabui.network.auth.model.TokenResponse
 import com.saibabui.ui.CustomeTextField
 import com.saibabui.ui.HeadingText
 import com.saibabui.ui.PrimaryButton
 import com.saibabui.ui.SecondaryButton
+import com.saibabui.ui.GoogleSignInButton
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.saibabui.auth.presentation.viewmodels.AuthenticationViewModel
 
 @Composable
 fun LoginScreen(navController: NavController, navigateToHome: () -> Unit) {
     val loginViewModel: LoginViewModel = hiltViewModel()
+    val authenticationViewModel: AuthenticationViewModel = hiltViewModel()
 
     Scaffold(
         topBar = {
@@ -54,6 +60,7 @@ fun LoginScreen(navController: NavController, navigateToHome: () -> Unit) {
             paddingValues = paddingValues,
             navController = navController,
             loginViewModel = loginViewModel,
+            authenticationViewModel = authenticationViewModel,
             navigateToHome = navigateToHome
         )
     }
@@ -64,21 +71,54 @@ fun LoginScreenBody(
     paddingValues: PaddingValues = PaddingValues(20.dp),
     navController: NavController,
     loginViewModel: LoginViewModel,
+    authenticationViewModel: AuthenticationViewModel,
     navigateToHome: () -> Unit = {}
 ) {
     val loginState by loginViewModel.loginState.collectAsStateWithLifecycle()
     val email by loginViewModel.email.collectAsStateWithLifecycle()
     val password by loginViewModel.password.collectAsStateWithLifecycle()
+    val googleLoginState by authenticationViewModel.googleLoginState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LaunchedEffect(key1 = loginState) {
-        if (loginState is UiState.Success) {
+        if (loginState is UiState.Success<*>) {
+            val message = when (val data = (loginState as UiState.Success<*>).data) {
+                is LoginResponse -> data.message
+                is TokenResponse -> "Login successful"
+                else -> "Login successful"
+            }
+
             Toast.makeText(
                 context,
-                (loginState as UiState.Success<LoginResponse>).data.message,
+                message,
                 Toast.LENGTH_SHORT
             ).show()
+
             navigateToHome()
+        }
+    }
+
+    LaunchedEffect(key1 = googleLoginState) {
+        when (googleLoginState) {
+            is UiState.Success<*> -> {
+                // Handle successful Google login - typically this would redirect to the web page
+                // for Google OAuth flow, then return with code to the app
+                // This would normally be handled by opening a Custom Chrome Tab
+                // For now, we'll just show a toast
+                Toast.makeText(
+                    context,
+                    "Google login initiated, please complete in browser",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            is UiState.Error -> {
+                Toast.makeText(
+                    context,
+                    "Google login error: ${(googleLoginState as UiState.Error).message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            else -> {}
         }
     }
 
@@ -122,6 +162,22 @@ fun LoginScreenBody(
                 ) {
                     loginViewModel.validate(LoginFormEvent.Submit)
                 }
+                
+                // Forgot Password link
+                SecondaryButton(
+                    buttonText = "Forgot Password?"
+                ) {
+                    navController.navigateToForgotPassword()
+                }
+                
+                // Google Sign-In button
+                GoogleSignInButton(
+                    onClick = { 
+                        authenticationViewModel.googleLogin()
+                    },
+                    enabled = googleLoginState !is UiState.Loading
+                )
+                
                 SecondaryButton(
                     buttonText = stringResource(id = R.string.sign_up_with_email)
                 ) {
@@ -156,7 +212,22 @@ fun LoginScreenBody(
                 }
             }
 
-            else -> {}
+            else -> {
+                // Handle Google login state for loading
+                when (googleLoginState) {
+                    is UiState.Loading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    else -> {}
+                }
+            }
         }
     }
 }

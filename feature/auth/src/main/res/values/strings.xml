@@ -66,5 +66,7 @@
     <string name="carry_resume_description">Save your resume to the cloud and access it anytime, anywhere.</string>
     <string name="latex_support">LaTeX Support</string>
     <string name="latex_support_description">Generate professional resumes in LaTeX format for high-quality PDF output.</string>
+    <string name="new_password">Current Password</string>
+    <string name="current_password">Current Password</string>
 
 </resources>

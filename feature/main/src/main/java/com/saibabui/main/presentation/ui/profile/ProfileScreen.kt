@@ -42,12 +42,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.saibabui.main.presentation.ui.profile.ProfileViewmodel
 import com.saibabui.ui.AccountSettingsSection
 import com.saibabui.ui.ActionButtonsSection
 import com.saibabui.ui.OtherSettingsSection
 import com.saibabui.ui.PersonalInfoSection
 import com.saibabui.ui.PrimaryButton
 import com.saibabui.ui.ProfileHeader
+import com.saibabui.ui.ThemeSettingsSection
 import com.saibabui.ui.ThemeSettingsSection
 
 @Composable
@@ -313,15 +315,62 @@ fun LogoutButton(viewModel: AccountViewModel, navController: NavController) {
 }
 
 @Composable
-fun AccountScreen(navController: NavController, viewModel: AccountViewModel = viewModel()) {
+fun AccountScreen(
+    navController: NavController, 
+    viewModel: AccountViewModel = viewModel(),
+    onNavigateToChangePassword: () -> Unit = { // navController.navigateToChangePassword()
+         }
+) {
+    val userProfile by viewModel.userProfile.collectAsState()
+    var name by remember { mutableStateOf(userProfile.name) }
+    var email by remember { mutableStateOf(userProfile.email) }
+    var phone by remember { mutableStateOf(userProfile.phone) }
+    val isNotificationEnabled by viewModel.isNotificationEnabled.collectAsState()
+    val isDarkModeEnabled by viewModel.isDarkModeEnabled.collectAsState()
+    val settingsViewModel = hiltViewModel<ProfileViewmodel>()
+    val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState()
+    var isLogout by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(isLogout) {
+        if (isLogout) {
+            viewModel.logout()
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()) // Enable scrolling here
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ProfileSection(viewModel)
-        SettingsSection(viewModel)
-        LogoutButton(viewModel, navController)
+        ProfileHeader(name = name)
+        PersonalInfoSection(
+            name = name,
+            email = email,
+            phone = phone,
+            onNameChange = { name = it },
+            onEmailChange = { email = it },
+            onPhoneChange = { phone = it }
+        )
+        AccountSettingsSection(
+            onChangePasswordClick = onNavigateToChangePassword,
+            onNotificationSettingsClick = { /* Notification settings action */ }
+        )
+        ThemeSettingsSection(
+            isDarkTheme = isDarkTheme,
+            onThemeToggle = { settingsViewModel.toggleTheme() }
+        )
+        OtherSettingsSection(
+            onLanguageClick = { /* Language settings action */ },
+            onPrivacyClick = { /* Privacy settings action */ }
+        )
+        ActionButtonsSection(
+            onSaveClick = { 
+                viewModel.updateProfile(name, email, phone, "", "", "", "") // Update with actual values
+            },
+            onLogoutClick = { isLogout = true }
+        )
     }
 }
 
