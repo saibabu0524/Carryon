@@ -155,6 +155,10 @@ class CollaborationViewModel @Inject constructor(
         )
     }
 
+    fun refreshCollaborators() {
+        _uiState.value.resumeId?.let { loadCollaborators(it) }
+    }
+
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }

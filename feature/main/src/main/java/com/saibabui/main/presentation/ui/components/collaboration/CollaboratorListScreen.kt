@@ -10,12 +10,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.saibabui.main.presentation.viewmodels.collaboration.CollaborationViewModel
 import com.saibabui.main.presentation.viewmodels.collaboration.CollaborationUiState
 import com.saibabui.network.home.model.Collaborator
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollaboratorListScreen(
     viewModel: CollaborationViewModel = hiltViewModel(),
@@ -85,18 +87,18 @@ fun CollaboratorListScreen(
                 uiState.error != null && uiState.collaborators.isEmpty() -> {
                     ErrorScreen(
                         errorMessage = uiState.error!!,
-                        onRetry = { viewModel.loadCollaborators() }
+                        onRetry = { uiState.resumeId?.let { viewModel.loadCollaborators(it) } }
                     )
                 }
                 else -> {
                     CollaboratorListContent(
                         uiState = uiState,
                         onRefresh = { viewModel.refreshCollaborators() },
-                        onRemoveClick = { collaborator -> 
-                            viewModel.showRemoveConfirmationDialog(collaborator) 
+                        onRemoveClick = { collaborator ->
+                            viewModel.showRemoveConfirmationDialog(collaborator)
                         },
-                        onAddCollaborator = { email, role -> 
-                            viewModel.addCollaborator(email, role)
+                        onAddCollaborator = { email, role ->
+                            uiState.resumeId?.let { viewModel.addCollaborator(it, email, role) }
                         },
                         onConfirmRemove = { viewModel.confirmRemoveCollaborator() },
                         onCancelRemove = { viewModel.cancelRemoveCollaborator() }
@@ -186,7 +188,7 @@ private fun CollaboratorListContent(
     if (uiState.showAddCollaboratorDialog) {
         AddCollaboratorDialog(
             onAddCollaborator = onAddCollaborator,
-            onDismiss = { viewModel.hideAddCollaboratorDialog() },
+            onDismiss = onCancelRemove,
             isLoading = uiState.isAddingCollaborator
         )
     }
@@ -422,7 +424,7 @@ private fun EmptyState(
             text = "Add collaborators to work together on this resume",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = androidx.compose.ui.text.TextAlign.Center
+            textAlign = TextAlign.Center
         )
         
         Spacer(modifier = Modifier.height(16.dp))
