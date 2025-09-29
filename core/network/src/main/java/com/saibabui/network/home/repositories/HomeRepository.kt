@@ -25,15 +25,20 @@ interface HomeRepository {
     suspend fun filterResumes(filters: Map<String, String>, page: Int, limit: Int): Flow<ApiResponse<List<ResumeResponse>>>
     suspend fun generateResumeFromTemplate(templateId: String, title: String, userData: String?): Flow<ApiResponse<ResumeResponse>>
     
-    // Template Management
-    suspend fun getTemplates(): Flow<ApiResponse<List<Map<String, Any>>>>
-    suspend fun getMyTemplates(): Flow<ApiResponse<List<Map<String, Any>>>>
+    // Template Management - Updated according to API spec
+    suspend fun getTemplates(categoryId: Int?, page: Int, pageSize: Int): Flow<ApiResponse<List<ResumeTemplateResponse>>>
+    suspend fun getMyTemplates(page: Int, pageSize: Int): Flow<ApiResponse<List<ResumeTemplateResponse>>>
     suspend fun createCustomTemplate(
-        templateName: String,
-        templateDescription: String,
-        category: String?,
         file: MultipartBody.Part
     ): Flow<ApiResponse<Map<String, Any>>>
+    
+    // Category Management - Added according to API spec
+    suspend fun getCategories(): Flow<ApiResponse<List<CategoryResponse>>>
+    suspend fun createCategory(categoryCreate: CategoryCreate): Flow<ApiResponse<CategoryResponse>>
+    suspend fun getCategory(categoryId: Int): Flow<ApiResponse<CategoryResponse>>
+    suspend fun updateCategory(categoryId: Int, categoryCreate: CategoryCreate): Flow<ApiResponse<CategoryResponse>>
+    suspend fun deleteCategory(categoryId: Int): Flow<ApiResponse<Map<String, Any>>>
+    suspend fun getTemplatesByCategory(categoryId: Int, page: Int, pageSize: Int): Flow<ApiResponse<List<ResumeTemplateResponse>>>
     
     // Activity & Analytics
     suspend fun getActivityHistory(page: Int, limit: Int, actionType: String?): Flow<ApiResponse<List<ActivityResponse>>>
@@ -45,9 +50,4 @@ interface HomeRepository {
     suspend fun markNotificationAsRead(notificationId: Int): Flow<ApiResponse<Map<String, Any>>>
     suspend fun markAllNotificationsAsRead(): Flow<ApiResponse<Map<String, Any>>>
     suspend fun deleteNotification(notificationId: Int): Flow<ApiResponse<Map<String, Any>>>
-    
-    // Collaboration
-    suspend fun addCollaborator(resumeId: Int, email: String, role: String): Flow<ApiResponse<Map<String, Any>>>
-    suspend fun getCollaborators(resumeId: Int): Flow<ApiResponse<List<Map<String, Any>>>>  
-    suspend fun removeCollaborator(resumeId: Int, userId: Int): Flow<ApiResponse<Map<String, Any>>>
 }

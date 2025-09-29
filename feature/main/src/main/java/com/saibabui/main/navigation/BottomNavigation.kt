@@ -45,7 +45,7 @@ fun HomeScreenWithBottomNavigation(
                         Home.ActivityDestination.route -> Text(text = "Activity")
                         Home.TransactionsDestination.route -> Text(text = "Resumes")
                         Home.NotificationDestination.route -> Text(text = "Notifications")
-                        Home.CollaborationDestination.route -> Text(text = "Collaboration")
+                        
                         Home.TemplateDestination.route -> Text(text = "Templates")
                     }
                 }
@@ -96,15 +96,7 @@ fun HomeScreenWithBottomNavigation(
                                         restoreState = true
                                     }
                                 }
-                                MainNavDestination.COLLABORATION -> {
-                                    navController.navigate(CollaborationGraph.ROUTE) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
+                                
                                 MainNavDestination.PROFILE -> {
                                     navController.navigate(Home.ProfileScreenDestination.route) {
                                         popUpTo(navController.graph.findStartDestination().id) {
@@ -140,7 +132,7 @@ fun HomeScreenWithBottomNavigation(
             activityGraph(navController = navController)
             resumeGraph(navController = navController)
             notificationGraph(navController = navController)
-            collaborationGraph(navController = navController)
+            
             profileGraph(navController = navController)
             templateGraph(navController = navController)
             

@@ -16,35 +16,30 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.saibabui.main.navigation.navigateToResumeScreen
 import com.saibabui.main.presentation.ui.templates.navigateToTemplatesScreens
+import com.saibabui.main.presentation.viewmodels.template.TemplateViewModel
+import com.saibabui.ui.ResumeTemplateUi
 import com.saibabui.main.utils.FilterButtons
-import com.saibabui.ui.Template
 import com.saibabui.ui.TemplatesGrid
+import com.saibabui.ui.TemplatesGridWithResumeTemplate
 import com.saibabui.ui.shimmer.ShimmerTemplateCard
 
 @Composable
 fun TemplateScreen(
     navController: NavController,
-    viewModel: TemplatesViewModel = hiltViewModel()
+    templateViewModel: TemplateViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by templateViewModel.uiState.collectAsState()
     var selectedCategory by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
-        viewModel.loadTemplates()
+        templateViewModel.loadTemplates()
     }
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Filter Buttons
-        FilterButtons(
-            categories = uiState.categories,
-            selectedCategory = selectedCategory,
-            onCategorySelected = { category ->
-                selectedCategory = category
-                viewModel.filterByCategory(category)
-            }
-        )
+        // Add category filtering here if needed with CategoryViewModel
+        // For now, use a simple approach
 
         // Content
         when {
@@ -56,7 +51,7 @@ fun TemplateScreen(
                 uiState.error?.let {
                     ErrorContent(
                         error = it,
-                        onRetry = viewModel::loadTemplates
+                        onRetry = templateViewModel::loadTemplates
                     )
                 }
             }
@@ -66,16 +61,15 @@ fun TemplateScreen(
                     selectedCategory = selectedCategory,
                     onClearFilter = {
                         selectedCategory = null
-                        viewModel.filterByCategory(null)
                     }
                 )
             }
 
             else -> {
-                TemplatesGrid(
+                TemplatesGridWithResumeTemplate(
                     templates = uiState.templates,
                     onTemplateClick = { template ->
-                        viewModel.onTemplateSelected(template)
+                        // Handle template selection
                         navController.navigateToTemplatesScreens()
                     }
                 )

@@ -21,24 +21,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.saibabui.ui.CardView
-import com.saibabui.ui.Template
+import com.saibabui.main.presentation.viewmodels.template.TemplateViewModel
+import com.saibabui.ui.ResumeTemplateUi
 
 @Composable
 fun TemplatesScreen(
     modifier: Modifier = Modifier,
-    viewModel: TemplatesViewModel = TemplatesViewModel(),
+    templateViewModel: TemplateViewModel = androidx.hilt.navigation.compose.hiltViewModel(),
     oncClick: () -> Unit
 ) {
-    val templates by viewModel.templates.collectAsState()
-    val selectedCategory by viewModel.selectedCategory.collectAsState()
-    val categories = listOf("Professional", "Creative", "Traditional", "Minimalist")
+    val uiState by templateViewModel.uiState.collectAsState()
+    val templates = uiState.templates
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
+        // Category selection can be added here if needed with CategoryViewModel
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -46,15 +46,8 @@ fun TemplatesScreen(
             item {
                 TemplateSelectionButton(
                     buttonText = "All Templates",
-                    isSelected = selectedCategory == null,
-                    oncClick = { viewModel.setSelectedCategory(null) }
-                )
-            }
-            items(categories) { category ->
-                TemplateSelectionButton(
-                    buttonText = category,
-                    isSelected = selectedCategory == category,
-                    oncClick = { viewModel.setSelectedCategory(category) }
+                    isSelected = true,
+                    oncClick = { /* TODO: Implement category filtering if needed */ }
                 )
             }
         }
@@ -77,11 +70,15 @@ fun TemplatesScreen(
 
 @Composable
 fun ResumeTemplateCard(
-    template: Template,
+    template: ResumeTemplateUi,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    CardView(onClick = onClick, modifier = modifier) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -95,7 +92,7 @@ fun ResumeTemplateCard(
                     .aspectRatio(1.5f),
                 contentAlignment = Alignment.Center
             ) {
-                val painter = rememberAsyncImagePainter(model = template.previewImage)
+                val painter = rememberAsyncImagePainter(model = template.templateImage) // Use templateImage from ResumeTemplateUi
                 if (painter.state is coil.compose.AsyncImagePainter.State.Error || painter.state is coil.compose.AsyncImagePainter.State.Empty) {
                     Text(
                         text = "Template Preview",
@@ -106,7 +103,7 @@ fun ResumeTemplateCard(
                 } else {
                     Image(
                         painter = painter,
-                        contentDescription = template.name,
+                        contentDescription = template.templateName, // Use templateName from ResumeTemplateUi
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.FillBounds
                     )
@@ -123,14 +120,14 @@ fun ResumeTemplateCard(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = template.name,
+                        text = template.templateName, // Use templateName from ResumeTemplateUi
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     )
                     Text(
-                        text = template.description,
+                        text = template.description, // Use description from ResumeTemplateUi
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -141,32 +138,6 @@ fun ResumeTemplateCard(
                     contentDescription = "Favorite",
                     tint = MaterialTheme.colorScheme.onSurface
                 )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp)
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                template.tags.forEach { tag ->
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                shape = RoundedCornerShape(4.dp),
-                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
-                            )
-                    ) {
-                        Text(
-                            text = tag,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp)
-                                .padding(4.dp)
-                        )
-                    }
-                }
             }
         }
     }
@@ -199,21 +170,23 @@ fun TemplateSelectionButton(
 @Composable
 fun TemplateScreenPreview() {
     val sampleTemplates = listOf(
-        Template(
-            id = "1",
-            name = "Modern Professional",
-            category = "Professional",
-            previewImage = "modern_preview.png",
+        ResumeTemplateUi(
+            id = 1,
+            templateName = "Modern Professional",
             description = "Clean and minimal design for corporate roles",
-            tags = listOf("Modern", "Professional")
+            templateImage = "modern_preview.png",
+            isPremium = false,
+            categoryId = 1,
+            userId = 1
         ),
-        Template(
-            id = "3",
-            name = "Creative Portfolio",
-            category = "Creative",
-            previewImage = "creative_preview.png",
+        ResumeTemplateUi(
+            id = 2,
+            templateName = "Creative Portfolio",
             description = "Stand out with this creative design",
-            tags = listOf("Creative", "Design")
+            templateImage = "creative_preview.png",
+            isPremium = true,
+            categoryId = 2,
+            userId = 1
         )
     )
     TemplatesScreen{}

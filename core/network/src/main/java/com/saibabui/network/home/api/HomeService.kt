@@ -115,38 +115,46 @@ interface HomeService {
         @Path("notification_id") notificationId: Int
     ): Response<SuccessResponse<Map<String, Any>>>
 
-    // Collaboration Endpoints
-    @POST("/api/home/resume/{resume_id}/collaborators")
-    suspend fun addCollaborator(
-        @Path("resume_id") resumeId: Int,
-        @Query("email") email: String,
-        @Query("role") role: String = "viewer"
-    ): Response<SuccessResponse<Map<String, Any>>>
-
-    @GET("/api/home/resume/{resume_id}/collaborators")
-    suspend fun getCollaborators(
-        @Path("resume_id") resumeId: Int
-    ): Response<SuccessResponse<List<Map<String, Any>>>>
-
-    @DELETE("/api/home/resume/{resume_id}/collaborators/{user_id}")
-    suspend fun removeCollaborator(
-        @Path("resume_id") resumeId: Int,
-        @Path("user_id") userId: Int
-    ): Response<SuccessResponse<Map<String, Any>>>
-
-    // Template Management Endpoints
+    // Template Management Endpoints - Updated according to API spec
     @GET("/api/home/templates")
-    suspend fun getTemplates(): Response<SuccessResponse<List<Map<String, Any>>>>
+    suspend fun getTemplates(
+        @Query("category_id") categoryId: Int? = null,
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 10
+    ): Response<SuccessResponse<List<ResumeTemplateResponse>>>
 
     @GET("/api/home/templates/my-templates")
-    suspend fun getMyTemplates(): Response<SuccessResponse<List<Map<String, Any>>>>
+    suspend fun getMyTemplates(
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 10
+    ): Response<SuccessResponse<List<ResumeTemplateResponse>>>
 
     @Multipart
     @POST("/api/home/templates/custom")
     suspend fun createCustomTemplate(
-        @Query("template_name") templateName: String,
-        @Query("template_description") templateDescription: String,
-        @Query("category") category: String? = null,
         @Part file: MultipartBody.Part
     ): Response<SuccessResponse<Map<String, Any>>>
+
+    // Category Management Endpoints - Added according to API spec
+    @GET("/api/home/categories")
+    suspend fun getCategories(): Response<SuccessResponse<List<CategoryResponse>>>
+
+    @POST("/api/home/categories")
+    suspend fun createCategory(@Body categoryCreate: CategoryCreate): Response<SuccessResponse<CategoryResponse>>
+
+    @GET("/api/home/categories/{category_id}")
+    suspend fun getCategory(@Path("category_id") categoryId: Int): Response<SuccessResponse<CategoryResponse>>
+
+    @PUT("/api/home/categories/{category_id}")
+    suspend fun updateCategory(@Path("category_id") categoryId: Int, @Body categoryCreate: CategoryCreate): Response<SuccessResponse<CategoryResponse>>
+
+    @DELETE("/api/home/categories/{category_id}")
+    suspend fun deleteCategory(@Path("category_id") categoryId: Int): Response<SuccessResponse<Map<String, Any>>>
+
+    @GET("/api/home/categories/{category_id}/templates")
+    suspend fun getTemplatesByCategory(
+        @Path("category_id") categoryId: Int,
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 10
+    ): Response<SuccessResponse<List<ResumeTemplateResponse>>>
 }

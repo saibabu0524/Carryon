@@ -124,6 +124,62 @@ class HomeRepositoryImpl(
         }
     }
 
+    override suspend fun getTemplates(categoryId: Int?, page: Int, pageSize: Int): Flow<ApiResponse<List<ResumeTemplateResponse>>> {
+        return apiCallWithSuccessResponse {
+            homeService.getTemplates(categoryId, page, pageSize)
+        }
+    }
+
+    override suspend fun getMyTemplates(page: Int, pageSize: Int): Flow<ApiResponse<List<ResumeTemplateResponse>>> {
+        return apiCallWithSuccessResponse {
+            homeService.getMyTemplates(page, pageSize)
+        }
+    }
+
+    override suspend fun createCustomTemplate(
+        file: MultipartBody.Part
+    ): Flow<ApiResponse<Map<String, Any>>> {
+        return apiCallWithSuccessResponse {
+            homeService.createCustomTemplate(file)
+        }
+    }
+
+    override suspend fun getCategories(): Flow<ApiResponse<List<CategoryResponse>>> {
+        return apiCallWithSuccessResponse {
+            homeService.getCategories()
+        }
+    }
+
+    override suspend fun createCategory(categoryCreate: CategoryCreate): Flow<ApiResponse<CategoryResponse>> {
+        return apiCallWithSuccessResponse {
+            homeService.createCategory(categoryCreate)
+        }
+    }
+
+    override suspend fun getCategory(categoryId: Int): Flow<ApiResponse<CategoryResponse>> {
+        return apiCallWithSuccessResponse {
+            homeService.getCategory(categoryId)
+        }
+    }
+
+    override suspend fun updateCategory(categoryId: Int, categoryCreate: CategoryCreate): Flow<ApiResponse<CategoryResponse>> {
+        return apiCallWithSuccessResponse {
+            homeService.updateCategory(categoryId, categoryCreate)
+        }
+    }
+
+    override suspend fun deleteCategory(categoryId: Int): Flow<ApiResponse<Map<String, Any>>> {
+        return apiCallWithSuccessResponse {
+            homeService.deleteCategory(categoryId)
+        }
+    }
+
+    override suspend fun getTemplatesByCategory(categoryId: Int, page: Int, pageSize: Int): Flow<ApiResponse<List<ResumeTemplateResponse>>> {
+        return apiCallWithSuccessResponse {
+            homeService.getTemplatesByCategory(categoryId, page, pageSize)
+        }
+    }
+
     override suspend fun getActivityHistory(page: Int, limit: Int, actionType: String?): Flow<ApiResponse<List<ActivityResponse>>> {
         return apiCallWithSuccessResponse {
             homeService.getActivityHistory(page, limit, actionType)
@@ -163,47 +219,6 @@ class HomeRepositoryImpl(
     override suspend fun deleteNotification(notificationId: Int): Flow<ApiResponse<Map<String, Any>>> {
         return apiCallWithSuccessResponse {
             homeService.deleteNotification(notificationId)
-        }
-    }
-
-    override suspend fun addCollaborator(resumeId: Int, email: String, role: String): Flow<ApiResponse<Map<String, Any>>> {
-        return apiCallWithSuccessResponse {
-            homeService.addCollaborator(resumeId, email, role)
-        }
-    }
-
-    override suspend fun getCollaborators(resumeId: Int): Flow<ApiResponse<List<Map<String, Any>>>> {
-        return apiCallWithSuccessResponse {
-            homeService.getCollaborators(resumeId)
-        }
-    }
-
-    override suspend fun removeCollaborator(resumeId: Int, userId: Int): Flow<ApiResponse<Map<String, Any>>> {
-        return apiCallWithSuccessResponse {
-            homeService.removeCollaborator(resumeId, userId)
-        }
-    }
-
-    override suspend fun getTemplates(): Flow<ApiResponse<List<Map<String, Any>>>> {
-        return apiCallWithSuccessResponse {
-            homeService.getTemplates()
-        }
-    }
-
-    override suspend fun getMyTemplates(): Flow<ApiResponse<List<Map<String, Any>>>> {
-        return apiCallWithSuccessResponse {
-            homeService.getMyTemplates()
-        }
-    }
-
-    override suspend fun createCustomTemplate(
-        templateName: String,
-        templateDescription: String,
-        category: String?,
-        file: MultipartBody.Part
-    ): Flow<ApiResponse<Map<String, Any>>> {
-        return apiCallWithSuccessResponse {
-            homeService.createCustomTemplate(templateName, templateDescription, category, file)
         }
     }
 }

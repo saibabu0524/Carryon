@@ -23,8 +23,7 @@ class NavigationActions(
     // Notification actions
     fun navigateToNotifications() = navController.navigateToNotifications()
     
-    // Collaboration actions
-    fun navigateToCollaboration() = navController.navigateToCollaboration()
+    
     
     // Template actions
     fun navigateToTemplates() = navController.navigateToTemplates()

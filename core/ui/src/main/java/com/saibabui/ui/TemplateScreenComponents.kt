@@ -21,9 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.rememberAsyncImagePainter
 import com.saibabui.mylibrary2.R
 
-// Template data class
+// Template data class (deprecated - kept for backward compatibility)
 data class Template(
     val id: String,
     val name: String,
@@ -32,6 +33,17 @@ data class Template(
     val completionPercentage: Int = 0,
     val description: String = "",
     val tags: List<String> = emptyList()
+)
+
+// New data class for Resume Template Response data
+data class ResumeTemplateUi(
+    val id: Int,
+    val templateName: String,
+    val description: String,
+    val templateImage: String,
+    val isPremium: Boolean,
+    val categoryId: Int,
+    val userId: Int
 )
 
 @Composable
@@ -118,6 +130,74 @@ fun TemplateTypeCard(
 }
 
 @Composable
+fun TemplateTypeCardWithResumeTemplate(
+    modifier: Modifier = Modifier,
+    template: ResumeTemplateUi,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                )
+                .fillMaxWidth()
+                .height(150.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            val painter = rememberAsyncImagePainter(model = template.templateImage)
+            val painterState = painter.state
+            if (true) {
+                Text(
+                    text = "Template Preview",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                )
+            } else {
+                Image(
+                    painter = painter,
+                    contentDescription = template.templateName,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds
+                )
+            }
+        }
+
+        Text(
+            text = template.templateName,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            ),
+            modifier = Modifier.padding(8.dp)
+        )
+        Box(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 8.dp)
+                .background(
+                    shape = RoundedCornerShape(4.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                )
+        ) {
+            Text(
+                text = "Category: ${template.categoryId}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .padding(4.dp)
+            )
+        }
+    }
+}
+
+@Composable
 fun TemplatesGrid(
     templates: List<Template>,
     modifier: Modifier = Modifier,
@@ -145,6 +225,43 @@ fun TemplatesGrid(
         ) {
             items(templates) { template ->
                 TemplateTypeCard(
+                    template = template,
+                    onClick = { onTemplateClick(template) },
+                    modifier = Modifier
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun TemplatesGridWithResumeTemplate(
+    templates: List<ResumeTemplateUi>,
+    modifier: Modifier = Modifier,
+    onTemplateClick: (ResumeTemplateUi) -> Unit
+) {
+    if (templates.isEmpty()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "No templates found.",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            contentPadding = PaddingValues(16.dp),
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(templates) { template ->
+                TemplateTypeCardWithResumeTemplate(
                     template = template,
                     onClick = { onTemplateClick(template) },
                     modifier = Modifier

@@ -31,10 +31,7 @@ fun NavController.navigateToNotifications() {
     navigate(NotificationGraph.ROUTE)
 }
 
-// Collaboration Navigation Extensions
-fun NavController.navigateToCollaboration() {
-    navigate(CollaborationGraph.ROUTE)
-}
+
 
 // Template Navigation Extensions
 fun NavController.navigateToTemplates() {

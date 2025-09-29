@@ -8,9 +8,6 @@ class CreateCustomTemplateUseCase @Inject constructor(
     private val homeRepository: HomeRepository
 ) {
     suspend operator fun invoke(
-        templateName: String,
-        templateDescription: String,
-        category: String?,
         file: MultipartBody.Part
-    ) = homeRepository.createCustomTemplate(templateName, templateDescription, category, file)
+    ) = homeRepository.createCustomTemplate(file)
 }

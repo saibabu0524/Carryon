@@ -4,7 +4,7 @@ import com.saibabui.main.domain.validation.profile.ProfileValidator
 import com.saibabui.main.domain.validation.resume.ResumeValidator
 import com.saibabui.main.domain.validation.template.TemplateValidator
 import com.saibabui.main.domain.validation.notification.NotificationValidator
-import com.saibabui.main.domain.validation.collaboration.CollaborationValidator
+import com.saibabui.main.domain.validation.category.CategoryValidator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,5 +33,5 @@ object ValidationModule {
 
     @Provides
     @Singleton
-    fun provideCollaborationValidator(): CollaborationValidator = CollaborationValidator()
+    fun provideCategoryValidator(): CategoryValidator = CategoryValidator()
 }

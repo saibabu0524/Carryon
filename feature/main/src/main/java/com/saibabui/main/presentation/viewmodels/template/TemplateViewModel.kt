@@ -29,11 +29,11 @@ class TemplateViewModel @Inject constructor(
         loadMyTemplates()
     }
 
-    fun loadTemplates() {
+    fun loadTemplates(categoryId: Int? = null) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             
-            getTemplatesUseCase().collect { response ->
+            getTemplatesUseCase(categoryId = categoryId).collect { response ->
                 when (response) {
                     is ApiResponse.Error -> {
                         _uiState.value = _uiState.value.copy(
@@ -45,15 +45,9 @@ class TemplateViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(isLoading = true)
                     }
                     is ApiResponse.Success -> {
-                        // Extract categories from templates
-                        val categories = response.data.mapNotNull { 
-                            it["category"] as? String 
-                        }.distinct().sorted()
-                        
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            templates = response.data,
-                            categories = categories
+                            templates = response.data
                         )
                     }
                 }
@@ -88,9 +82,6 @@ class TemplateViewModel @Inject constructor(
     }
 
     fun createCustomTemplate(
-        templateName: String,
-        templateDescription: String,
-        category: String?,
         file: MultipartBody.Part
     ) {
         viewModelScope.launch {
@@ -100,12 +91,7 @@ class TemplateViewModel @Inject constructor(
                 successMessage = null
             )
             
-            createCustomTemplateUseCase(
-                templateName = templateName,
-                templateDescription = templateDescription,
-                category = category,
-                file = file
-            ).collect { response ->
+            createCustomTemplateUseCase(file).collect { response ->
                 when (response) {
                     is ApiResponse.Error -> {
                         _uiState.value = _uiState.value.copy(
@@ -127,10 +113,6 @@ class TemplateViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun filterByCategory(category: String?) {
-        _uiState.value = _uiState.value.copy(selectedCategory = category)
     }
 
     fun refreshTemplates() {

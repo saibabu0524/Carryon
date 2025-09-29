@@ -4,7 +4,7 @@ import com.saibabui.main.domain.validation.profile.ProfileValidator
 import com.saibabui.main.domain.validation.resume.ResumeValidator
 import com.saibabui.main.domain.validation.template.TemplateValidator
 import com.saibabui.main.domain.validation.notification.NotificationValidator
-import com.saibabui.main.domain.validation.collaboration.CollaborationValidator
+import com.saibabui.main.domain.validation.category.CategoryValidator
 import com.saibabui.main.domain.validation.ValidationResult
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class ValidationUseCase @Inject constructor(
     private val resumeValidator: ResumeValidator,
     private val templateValidator: TemplateValidator,
     private val notificationValidator: NotificationValidator,
-    private val collaborationValidator: CollaborationValidator
+    private val categoryValidator: CategoryValidator
 ) {
     fun validateProfile(
         firstName: String,
@@ -102,18 +102,18 @@ class ValidationUseCase @Inject constructor(
         return ValidationErrors(errors)
     }
     
-    fun validateCollaborator(
-        email: String,
-        role: String
+    fun validateCategory(
+        name: String,
+        description: String?
     ): ValidationErrors {
         val errors = mutableMapOf<String, String>()
         
-        collaborationValidator.validateEmail(email).takeIf { !it.isSuccessful }?.let {
-            errors["email"] = it.errorMessage
+        categoryValidator.validateName(name).takeIf { !it.isSuccessful }?.let {
+            errors["name"] = it.errorMessage
         }
         
-        collaborationValidator.validateRole(role).takeIf { !it.isSuccessful }?.let {
-            errors["role"] = it.errorMessage
+        categoryValidator.validateDescription(description).takeIf { !it.isSuccessful }?.let {
+            errors["description"] = it.errorMessage
         }
         
         return ValidationErrors(errors)

@@ -5,7 +5,6 @@ import com.saibabui.main.domain.validation.profile.ProfileValidator
 import com.saibabui.main.domain.validation.resume.ResumeValidator
 import com.saibabui.main.domain.validation.template.TemplateValidator
 import com.saibabui.main.domain.validation.notification.NotificationValidator
-import com.saibabui.main.domain.validation.collaboration.CollaborationValidator
 import javax.inject.Inject
 
 class ValidateProfileUseCase @Inject constructor(

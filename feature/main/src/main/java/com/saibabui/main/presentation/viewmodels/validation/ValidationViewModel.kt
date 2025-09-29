@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.saibabui.main.domain.usecases.validation.ValidateProfileUseCase
 import com.saibabui.main.domain.usecases.validation.ValidateResumeUseCase
 import com.saibabui.main.domain.usecases.validation.ValidateTemplateUseCase
-import com.saibabui.main.domain.usecases.validation.ValidateCollaborationUseCase
 import com.saibabui.main.domain.validation.ValidationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +16,6 @@ class ValidationViewModel @Inject constructor(
     private val validateProfileUseCase: ValidateProfileUseCase,
     private val validateResumeUseCase: ValidateResumeUseCase,
     private val validateTemplateUseCase: ValidateTemplateUseCase,
-    private val validateCollaborationUseCase: ValidateCollaborationUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ValidationUiState())
@@ -100,29 +98,6 @@ class ValidationViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             templateErrors = errors,
             hasTemplateErrors = hasErrors
-        )
-
-        return result.isSuccessful
-    }
-
-    fun validateCollaboration(
-        email: String,
-        role: String
-    ): Boolean {
-        val result = validateCollaborationUseCase(
-            email = email,
-            role = role
-        )
-
-        val errors = mutableMapOf<String, String>()
-        if (!result.isSuccessful) {
-            errors["general"] = result.errorMessage
-        }
-
-        val hasErrors = !result.isSuccessful
-        _uiState.value = _uiState.value.copy(
-            collaborationErrors = errors,
-            hasCollaborationErrors = hasErrors
         )
 
         return result.isSuccessful

@@ -16,6 +16,5 @@ enum class MainNavDestination(val icon: ImageVector, val resId: Int, val destina
     ACTIVITY(icon = Icons.Default.AccessTimeFilled, resId = R.string.activity_nav_lable, destination = Home.ActivityDestination),
     TRANSACTIONS(icon = Icons.Default.History, resId = R.string.transactions_nav_lable, destination = Home.TransactionsDestination),
     NOTIFICATIONS(icon = Icons.Default.Notifications, resId = R.string.notifications_nav_label, destination = Home.NotificationDestination),
-    COLLABORATION(icon = Icons.Default.People, resId = R.string.collaboration_nav_label, destination = Home.CollaborationDestination),
     PROFILE(icon = Icons.Default.Person, resId = R.string.profile_nav_lable, destination = Home.ProfileScreenDestination)
 }
