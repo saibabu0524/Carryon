@@ -1,5 +1,6 @@
 package com.saibabui.main.presentation.ui.components.activity
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -88,7 +89,7 @@ fun ActivityListItem(
                 // Details
                 if (activity.details?.isNotBlank() == true) {
                     Text(
-                        text = activity.details,
+                        text = activity.details ?: "details not available",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
@@ -122,6 +123,7 @@ private fun getActionIcon(action: String): androidx.compose.ui.graphics.vector.I
     }
 }
 
+@Composable
 private fun getActionColor(action: String): androidx.compose.ui.graphics.Color {
     return when (action.lowercase()) {
         "resume_created" -> MaterialTheme.colorScheme.primary

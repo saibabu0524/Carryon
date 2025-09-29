@@ -2,13 +2,13 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    kotlin("plugin.serialization") version "2.1.10"
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hilt.android)
 }
 
 android {
-    namespace = "com.saibabui.home"
+    namespace = "com.saibabui.main"
     compileSdk = 34
 
     defaultConfig {
@@ -37,9 +37,6 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -53,7 +50,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3.adaptive)
     implementation(libs.androidx.compose.material3.adaptive.layout)
     implementation(libs.androidx.compose.material3.adaptive.navigation)
@@ -65,9 +61,6 @@ dependencies {
     implementation(libs.ui)
 
     implementation(libs.ui.tooling.preview)
-    implementation(project(":core:ui"))
-    implementation(project(":core:datastore"))
-    implementation(project(":core:database"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -84,8 +77,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation("io.github.afreakyelf:Pdf-Viewer:2.3.6")
 
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     ksp ("androidx.hilt:hilt-compiler:1.0.0")
 
