@@ -53,6 +53,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
+import com.saibabui.auth.presentation.ui.login.navigateToLogin
+import com.saibabui.carryon.navigation.Authentication
 import com.saibabui.carryon.navigation.RootNavigationGraph
 import com.saibabui.carryon.navigation.navigateToHome
 import com.saibabui.carryon.ui.theme.Black
@@ -70,11 +72,14 @@ class MainActivity : ComponentActivity() {
     lateinit var datastore: UserPreferences
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
         setContent {
             val settingsViewModel: ProfileViewmodel = viewModel()
+            val isLoggedIn = settingsViewModel.isLoggedIn.collectAsState()
 
             val isDarkTheme by settingsViewModel.isDarkTheme.collectAsState()
             println("isDarkTheme ===== $isDarkTheme")
@@ -86,7 +91,10 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    RootNavigationGraph(navController, datastore) {
+                    RootNavigationGraph(
+                        navController, startDestination =
+                            isLoggedIn.value, datastore
+                    ) {
                         navController.navigateToHome()
                     }
                 }

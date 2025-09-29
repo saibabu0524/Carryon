@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.datastore.dataStore
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,13 +27,14 @@ object Loading
 @Composable
 fun RootNavigationGraph(
     navController: NavHostController,
+    startDestination: Boolean,
     dataStore: UserPreferences,
     navigateToHome: () -> Unit
 ) {
     NavHost(
         navController = navController,
 //        startDestination = HomeScreen,
-        startDestination = Loading
+        startDestination = if (startDestination) HomeScreen else Authentication
     ) {
         composable<Loading> {
             LaunchedEffect(Unit) {
