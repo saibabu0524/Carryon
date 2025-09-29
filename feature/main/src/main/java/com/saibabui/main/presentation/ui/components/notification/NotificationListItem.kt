@@ -134,6 +134,7 @@ fun NotificationListItem(
     }
 }
 
+@Composable
 private fun getNotificationTypeColor(type: String): androidx.compose.ui.graphics.Color {
     return when (type.lowercase()) {
         "resume_updated" -> MaterialTheme.colorScheme.secondary

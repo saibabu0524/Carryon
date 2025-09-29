@@ -1,5 +1,6 @@
 package com.saibabui.main.presentation.ui.components.template
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -78,7 +79,7 @@ fun TemplateListItem(
                         )
                     ) {
                         Text(
-                            text = template.category,
+                            text = template.category ?: "Uncategorized",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -90,7 +91,7 @@ fun TemplateListItem(
             // Template description
             if (template.description?.isNotBlank() == true) {
                 Text(
-                    text = template.description,
+                    text = template.description ?: "No description available.",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,

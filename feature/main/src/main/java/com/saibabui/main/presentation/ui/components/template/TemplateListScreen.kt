@@ -1,7 +1,9 @@
 package com.saibabui.main.presentation.ui.components.template
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -12,12 +14,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.saibabui.main.presentation.viewmodels.template.TemplateViewModel
 import com.saibabui.main.presentation.viewmodels.template.TemplateUiState
 import com.saibabui.network.home.model.TemplateResponse
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TemplateListScreen(
     viewModel: TemplateViewModel = hiltViewModel(),
@@ -326,7 +330,7 @@ private fun EmptyState(
             text = "Try selecting a different category or refresh to see more templates",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = androidx.compose.ui.text.TextAlign.Center
+            textAlign = TextAlign.Center
         )
         
         Spacer(modifier = Modifier.height(16.dp))

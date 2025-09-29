@@ -17,45 +17,47 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    
-    // Handle state changes and show appropriate UI
-    LaunchedEffect(uiState.error) {
-        uiState.error?.let { errorMessage ->
-            // Show error snackbar or dialog
-            println("Error: $errorMessage")
-        }
-    }
-    
-    LaunchedEffect(uiState.successMessage) {
-        uiState.successMessage?.let { successMessage ->
-            // Show success snackbar or dialog
-            println("Success: $successMessage")
-        }
-    }
+//    val uiState by viewModel.uiState.collectAsState()
+//
+//    // Handle state changes and show appropriate UI
+//    LaunchedEffect(uiState.error) {
+//        uiState.error?.let { errorMessage ->
+//            // Show error snackbar or dialog
+//            println("Error: $errorMessage")
+//        }
+//    }
+//
+//    LaunchedEffect(uiState.successMessage) {
+//        uiState.successMessage?.let { successMessage ->
+//            // Show success snackbar or dialog
+//            println("Success: $successMessage")
+//        }
+//    }
+//
+//    Box(modifier = modifier.fillMaxSize()) {
+//        when {
+//            uiState.isLoading -> {
+//                LoadingIndicator()
+//            }
+//            uiState.error != null -> {
+//                ErrorScreen(
+//                    errorMessage = uiState.error!!,
+//                    onRetry = { viewModel.loadProfile() }
+//                )
+//            }
+//            else -> {
+//                ProfileContent(
+//                    uiState = uiState,
+//                    onEditClick = { viewModel.toggleEditMode() },
+//                    onSaveClick = { request -> viewModel.updateProfile(request) },
+//                    onAvatarClick = { /* Handle avatar click */ },
+//                    onDeleteAvatarClick = { /* Handle delete avatar */ }
+//                )
+//            }
+//        }
+//    }
 
-    Box(modifier = modifier.fillMaxSize()) {
-        when {
-            uiState.isLoading -> {
-                LoadingIndicator()
-            }
-            uiState.error != null -> {
-                ErrorScreen(
-                    errorMessage = uiState.error!!,
-                    onRetry = { viewModel.loadProfile() }
-                )
-            }
-            else -> {
-                ProfileContent(
-                    uiState = uiState,
-                    onEditClick = { viewModel.toggleEditMode() },
-                    onSaveClick = { request -> viewModel.updateProfile(request) },
-                    onAvatarClick = { /* Handle avatar click */ },
-                    onDeleteAvatarClick = { /* Handle delete avatar */ }
-                )
-            }
-        }
-    }
+    Text("Profile Screen is under construction")
 }
 
 @Composable

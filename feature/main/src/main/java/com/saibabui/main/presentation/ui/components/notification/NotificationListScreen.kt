@@ -2,6 +2,7 @@ package com.saibabui.main.presentation.ui.components.notification
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -16,6 +17,7 @@ import com.saibabui.main.presentation.viewmodels.notification.NotificationViewMo
 import com.saibabui.main.presentation.viewmodels.notification.NotificationUiState
 import com.saibabui.network.home.model.NotificationResponse
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationListScreen(
     viewModel: NotificationViewModel = hiltViewModel(),
