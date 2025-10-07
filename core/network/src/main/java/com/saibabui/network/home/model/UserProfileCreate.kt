@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserProfileDetails(
+data class UserProfileCreate(
     @SerialName("full_name")
     val fullName: String,
     @SerialName("email")
@@ -31,14 +31,8 @@ data class UserProfileDetails(
     val professionalSummary: String? = null,
     @SerialName("headline")
     val headline: String? = null,
-    @SerialName("profile_completion_percentage")
-    val profileCompletionPercentage: Int = 0,
     @SerialName("avatar_url")
     val avatarUrl: String? = null,
-    @SerialName("is_active")
-    val isActive: Boolean = true,
-    @SerialName("id")
-    val id: String,
     @SerialName("user_id")
     val userId: String
 )

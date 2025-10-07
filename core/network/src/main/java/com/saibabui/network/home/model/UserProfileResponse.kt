@@ -2,9 +2,10 @@ package com.saibabui.network.home.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import java.util.Date
 
 @Serializable
-data class UserProfileDetails(
+data class UserProfileResponse(
     @SerialName("full_name")
     val fullName: String,
     @SerialName("email")

@@ -1,19 +1,18 @@
 package com.saibabui.network.auth.model
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-
-@Parcelize
+@Serializable
 data class LoginResponse(
     val status: String,
     val message: String,
     val data: LoginData
-) : Parcelable
+)
 
 
-@Parcelize
+@Serializable
 data class LoginData(
     val accessToken: String,
     val refreshToken: String
-) : Parcelable
+)

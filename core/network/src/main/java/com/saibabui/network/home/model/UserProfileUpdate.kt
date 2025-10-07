@@ -4,15 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserProfileDetails(
+data class UserProfileUpdate(
     @SerialName("full_name")
-    val fullName: String,
-    @SerialName("email")
-    val email: String,
+    val fullName: String? = null,
     @SerialName("phone")
-    val phone: String,
+    val phone: String? = null,
     @SerialName("location")
-    val location: String,
+    val location: String? = null,
     @SerialName("date_of_birth")
     val dateOfBirth: String? = null,
     @SerialName("nationality")
@@ -31,14 +29,6 @@ data class UserProfileDetails(
     val professionalSummary: String? = null,
     @SerialName("headline")
     val headline: String? = null,
-    @SerialName("profile_completion_percentage")
-    val profileCompletionPercentage: Int = 0,
     @SerialName("avatar_url")
-    val avatarUrl: String? = null,
-    @SerialName("is_active")
-    val isActive: Boolean = true,
-    @SerialName("id")
-    val id: String,
-    @SerialName("user_id")
-    val userId: String
+    val avatarUrl: String? = null
 )
