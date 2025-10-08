@@ -20,8 +20,8 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideValidateEmail(): ValidateMobileNumber {
-        return ValidateMobileNumber()
+    fun provideValidateEmail(): ValidateEmail {
+        return ValidateEmail()
     }
 
     @Provides
@@ -44,13 +44,13 @@ object AuthModule {
 
     @Provides
     @Singleton
-    fun provideValidateName(): ValidateEmail {
-        return ValidateEmail()
+    fun provideValidateName(): ValidateName {
+        return ValidateName()
     }
 
     @Provides
     @Singleton
-    fun provideValidateMobileNumber(): ValidateName {
-        return ValidateName()
+    fun provideValidateMobileNumber(): ValidateMobileNumber {
+        return ValidateMobileNumber()
     }
 }

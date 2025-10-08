@@ -84,8 +84,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation("io.github.afreakyelf:Pdf-Viewer:2.3.6")
 
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     ksp ("androidx.hilt:hilt-compiler:1.0.0")
 

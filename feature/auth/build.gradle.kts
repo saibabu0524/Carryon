@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":core:database"))
     debugImplementation(libs.ui.tooling)
 
+    testImplementation(libs.junit)
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.test.manifest)
 
@@ -81,8 +82,8 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.adaptive)
     implementation("com.google.android.gms:play-services-auth:21.2.0")
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     ksp("androidx.hilt:hilt-compiler:1.2.0-alpha01")
 

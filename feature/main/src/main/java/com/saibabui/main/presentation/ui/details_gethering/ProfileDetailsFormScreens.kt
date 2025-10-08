@@ -16,9 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.saibabui.network.home.model.UserProfileCreate
-import com.saibabui.main.presentation.ui.details_gethering.UserProfileFormViewModel
-import com.saibabui.main.presentation.ui.details_gethering.ProfileFormUiState
-import kotlinx.coroutines.flow.collectAsState
 
 /**
  * Profile Details Form Screens for gathering user profile information after login
